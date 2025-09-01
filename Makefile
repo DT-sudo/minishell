@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror 
+# CFLAGS = -Wall -Wextra -Werror 
 RFLAGS =  -lreadline
 INCLUDES = -I./
 
@@ -10,7 +10,8 @@ NAME = minishell
 SRCDIR = src
 OBJDIR = obj
 
-SRC = main.c parsing.c utils.c
+SRC = 	main.c validate_input.c validate_input_2.c \
+		tokenizer.c tokenizer_utils_2.c tokenizer_utils.c utils.c 
 OBJS = $(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 SRCS = $(addprefix $(SRCDIR)/,$(SRC))
 
