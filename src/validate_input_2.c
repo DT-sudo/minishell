@@ -6,11 +6,11 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 00:44:09 by dt                #+#    #+#             */
-/*   Updated: 2025/08/26 13:24:47 by dt               ###   ########.fr       */
+/*   Updated: 2025/08/29 08:43:19 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	find_sq(char *input, int *signl_q)
 {

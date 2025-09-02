@@ -6,28 +6,20 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:48 by dt                #+#    #+#             */
-/*   Updated: 2025/08/26 13:25:17 by dt               ###   ########.fr       */
+/*   Updated: 2025/08/29 08:43:25 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-//					FOR THIS PART
-// 1. for flag tokenather add because -l-a is not valid format
-// 2. add validation of more then 2 of '>' '<' in the raw
-// 4. add digits validation
-// 5. add validation of the empty - for flag tokenather
-// 6. $lower_case is valid but just prints \n or just nothing if within ""
+// 1. add validation of more then 2 of '>' '<' in the raw
+// 2. add validation of the empty - for flag tokenather
+// 3. $lower_case is valid but just prints \n or just nothing if within ""
 
 // 					FOR LINKED LIST validation
 // 1. Pipe at start: | ls → syntax error.
 // 2. Pipe at end: ls | → syntax error.
 // 3. Pipe next to another pipe: ls | | wc → invalid, must catch.
-// 4.
-
-//   				For env vars $HOME...
-// Shell variable names can only contain letters, digits,
-// and underscores ([a-zA-Z0-9_])
 
 // '\'
 int	has_backslash(char *input)

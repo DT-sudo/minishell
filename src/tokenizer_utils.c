@@ -6,11 +6,11 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 00:41:29 by dt                #+#    #+#             */
-/*   Updated: 2025/08/26 13:18:04 by dt               ###   ########.fr       */
+/*   Updated: 2025/08/29 17:58:17 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	*tk_out_appnd(char *input, int res[3])
 {
@@ -111,25 +111,3 @@ int	*tk_envp_v(char *input, int res[3])
 	return (res);
 }
 
-// int	*tk_flag(char *input, int res[3])
-// {
-// 	int	inword;
-// 	int	i;
-
-// 	i = 0;
-// 	inword = 0;
-// 	while (*input != '\0' && *input != 32 && *input != 9)
-// 	{
-// 		if (!inword && *input == 45) // 45 == '-'
-// 		{
-// 			inword = 1;
-// 			res[0] = i; // flag without '-'
-// 		}
-// 		else
-// 			i++;
-// 		input++;
-// 	}
-// 	res[1] = i;
-// 	res[2] = 1;
-// 	return (res);
-// }

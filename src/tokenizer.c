@@ -6,13 +6,12 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:11:33 by dt                #+#    #+#             */
-/*   Updated: 2025/08/26 13:30:52 by dt               ###   ########.fr       */
+/*   Updated: 2025/08/29 18:03:16 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-// returns new node, parametrs: start end of the new node its type
 t_input	*do_node(int start_end[], char *input)
 {
 	int		len;
@@ -55,7 +54,6 @@ int	tk_len_calc_len(t_input *new_word, int tk_len)
 	return (tk_len);
 }
 
-// ads node to the linked list and updates tk_len incrementing it by the lenght of the added node
 int	add_node(t_input **words, t_input *new_word, int tk_len)
 {
 	t_input	*tmp;
@@ -78,25 +76,25 @@ int	creat_tokenz(char *input, t_input **words, int tk_len)
 	int	res[3];
 	int	len;
 
-	if (*input == 39) // singl quots
+	if (*input == 39) // '
 		return (add_node(words, do_node(tk_s_quotes(input, res), input),
 				tk_len));
-	else if (*input == 34) // double quots
+	else if (*input == 34) // "
 		return (add_node(words, do_node(tk_d_quotes(input, res), input),
 				tk_len));
 	else if (*input == 124) // |
 		return (add_node(words, do_node(tk_pipe(input, res), input), tk_len));
-	else if (*input == 36) // $ (environmental var)
+	else if (*input == 36) // $ 
 		return (add_node(words, do_node(tk_envp_v(input, res), input), tk_len));
-	else if (*input == 62) // >> >
+	else if (*input == 62) // >
 		return (add_node(words, do_node(tk_out_appnd(input, res), input),
 				tk_len));
-	else if (*input == 60) // << <
+	else if (*input == 60) // <
 		return (add_node(words, do_node(tk_in_here(input, res), input),
 				tk_len));
-	else if (*input != 0)
+	else if (*input != 0) // words
 		return (add_node(words, do_node(tk_word(input, res), input), tk_len));
-	return (0); // <<=--
+	return (0);
 }
 
 t_input	*tokenize(t_input *words, char *input)
