@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:11:33 by dt                #+#    #+#             */
-/*   Updated: 2025/08/29 18:03:16 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/02 18:18:14 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ t_input	*do_node(int start_end[], char *input)
 
 int	tk_len_calc_len(t_input *new_word, int tk_len)
 {
-	if (new_word->type == 1 || new_word->type == 4 || new_word->type == 5
-		|| new_word->type == 6 || new_word->type == 7 || new_word->type == 8
-		|| new_word->type == 9)
+	if (new_word->type == 0 || new_word->type == 3 || new_word->type == 4
+		|| new_word->type == 5 || new_word->type == 6 || new_word->type == 7
+		|| new_word->type == 8)
 		tk_len = calc_len(new_word);
-	else if (new_word->type == 2 || new_word->type == 3)
+	else if (new_word->type == 1 || new_word->type == 2)
 		tk_len = calc_len(new_word) + 2;
 	return (tk_len);
 }
