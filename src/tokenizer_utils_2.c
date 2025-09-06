@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 00:39:29 by dt                #+#    #+#             */
-/*   Updated: 2025/08/29 08:43:38 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/02 18:15:21 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	*tk_word(char *input, int res[3])
 		input++;
 	}
 	res[1] = i;
-	res[2] = 1;
+	res[2] = TOKEN_WORD; // 0
 	return (res);
 }
 
@@ -59,7 +59,7 @@ int	*tk_s_quotes(char *input, int res[3])
 		{
 			inword = 1;
 			res[0] = i + 1;
-			res[2] = 2;
+			res[2] = TOKEN_SG_Q; // 1
 		}
 		else if (*input == '\'' && inword)
 		{
@@ -86,7 +86,7 @@ int	*tk_d_quotes(char *input, int res[3])
 		{
 			inword = 1;
 			res[0] = i + 1;
-			res[2] = 3;
+			res[2] = TOKEN_DB_Q; // 2
 		}
 		else if (*input == '"' && inword)
 		{
