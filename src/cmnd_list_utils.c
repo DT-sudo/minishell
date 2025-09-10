@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 17:31:02 by dt                #+#    #+#             */
-/*   Updated: 2025/09/06 18:51:03 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/10 12:49:55 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	set_to_zero(t_cmnd *cmnd_node)
 	cmnd_node->rd_in_filename = NULL;
 	cmnd_node->appnd = false;
 	cmnd_node->heredoc = false;
-	cmnd_node->has_pipe = false;
 	cmnd_node->next = NULL;
 }
 
@@ -72,7 +71,9 @@ void	do_cmnd_array(t_input *words, t_cmnd *node, int size)
 		return;
 	i = 0;
 	tmp = words;
-	res = malloc(sizeof(char *) * size + 1);
+	res = malloc(sizeof(char *) * (size + 1));
+	if (res == NULL)
+		exit(1);
 	while (tmp != NULL && tmp->type != TOKEN_PIPE)
 	{
 		res[i++] = tmp->word;
@@ -93,7 +94,9 @@ void	do_cmnd_array_type(t_input *words, t_cmnd *node, int size)
 	if (words == NULL)
 		return;
 	tmp = words;
-	res_type = malloc(size + 1);
+	res_type = malloc(sizeof(token_type_t *) * (size + 1));
+	if (res_type == NULL)
+		exit(1);
 	while (tmp != NULL && tmp->type != TOKEN_PIPE)
 	{
 		res_type[i++] = &tmp->type;

@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/06 18:39:55 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/10 14:00:08 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,13 @@ typedef struct s_input
 // cmnds structure
 typedef struct s_cmnd
 {
-	char **argv; // cmnd + parametrs
-	token_type_t			**argv_type;
+	char **argv;
+	token_type_t	**argv_type;
 	char *rd_out_filename; // filename right after >/>>
 	char *rd_in_filename;  // filename right after </<<	reads from stdin to file
 	bool			appnd;
 	bool			heredoc;
-	bool			has_pipe;
+	// bool			has_pipe;
 	struct s_cmnd *next; // link to the next cmnd
 }					t_cmnd;
 
@@ -80,11 +80,11 @@ typedef struct s_env
 // creat_cmnd_list.c
 t_input				*move_ptr_cmnd(t_input *next_cmnd);
 void				set_apnd_hered_pipe(t_cmnd *node);
-t_cmnd				*list_nodes(t_cmnd *node, t_cmnd **list, int cmnd_qntt);
+void				list_nodes(t_cmnd *node, t_cmnd **list, int cmnd_qntt);
 void				set_filename(t_cmnd *node);
 t_cmnd				*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd,
-						int cmnd_qntt, t_cmnd *list);
-t_cmnd				*creat_cmnd_list(t_input *words, int size);
+						int cmnd_qntt, t_cmnd **list, int dpth);
+t_cmnd				**creat_cmnd_list(t_input *words, int size);
 
 // cmnd_list_utils.c
 void				set_to_zero(t_cmnd *cmnd_node);
@@ -128,9 +128,6 @@ int					*tk_d_quotes(char *input, int res[3]);
 char				*strjoin_modified(char const *s1, char const *s2);
 char				**do_env_array(t_env *env, int size);
 int					count_list_env(t_env *env);
-// char				**do_cmnd_array(t_input *words, int size); // del this
-// t_cmnd			*do_cmnd_list(t_input *words, t_cmnd *cmnd_list, int size);
-// del this
 
 // utils.c
 void				ft_clean(t_input *words, char *input);

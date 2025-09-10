@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/06 18:40:53 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/10 13:54:37 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,58 @@ void	print_og_env(char **envp)
 // 	return (0);
 // }
 
+// util_func just for tests
+void	printf_cmnd_list(t_cmnd **list)
+{
+	int i, j, n;
+	t_cmnd *tmp;
+	
+	n = 0;
+	i = 0;
+	tmp = *list;
+	while(tmp)
+	{
+		printf("\nCOMMAND #%d:\n", ++n);
+		printf("arguments list: ");
+		while(tmp->argv[i])
+		{
+			j = 0;
+			printf("[");
+			while(tmp->argv[i][j])
+			{
+				printf("%c", tmp->argv[i][j]);
+				j++;
+			}
+			printf("]->");
+			i++;
+		}
+		i = 0;
+		printf("NULL\n");
+		printf("arguments type list: ");
+		while(tmp->argv[i])
+		{
+			j = 0;
+			printf("[");
+			while(tmp->argv_type[i][j])
+			{
+				printf("%d", (int)tmp->argv_type[i][j]);
+				j++;
+			}
+			printf("]->");
+			i++;
+		}
+		i = 0;
+		printf("NULL\n");
+		if (tmp->rd_in_filename)
+			printf("'<</<' filename is: %s\n", tmp->rd_in_filename);
+		if (tmp->rd_out_filename)
+			printf("'>>/>' filename is: %s\n", tmp->rd_out_filename);
+		printf("has appnd: %d\n", (int)tmp->appnd);
+		printf("has heredoc: %d\n", (int)tmp->heredoc);
+		tmp = tmp->next;
+	}
+}
+
 // // demo main
 int	main(int argc, char **argv, char **envp)
 {
@@ -120,30 +172,9 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		words = tokenize(words, input);
-		creat_cmnd_list(words, count_cmnds(words));
-		// array = do_array(words, count_list_input(words)); //del this
-
-		////								pseodo_code
-		// t_cmnd **cmnd_list;
-		//		// 1. MALLOC T_CMND LIST 
-		// cmnd_list = malloc(sizeof(t_cmnd *) * count_cmnds(words)); 
-		//		// 2. SAVE EVERY COMMAND TO SEPARATED NODE in t_cmnd linked list and setup every t_cmnd parametr
-		// cmnd_list = do_cmnd_list(array); // does linked_list of commands from the input devided with |
-		// 		// 3. DO WHILE LOOP FOR EXECUTING EVERY COMMAND FROM LIKED LIST
-		// while(cmnd_list)
-		// {
-			// if(is_builtin_func(cmnd_list))
-			// {
-				//res_to_pass_to_next = do_builtin_cmnd(cmnd_list);
-			// }
-			// else
-			// {
-				// res_to_pass_to_next = do_extended_cmnd(cmnd_list); -> do_extended_cmnd(cmnd_list) == execve() + fork()
-			// }
-			// cmnd_list = cmnd_list->next;
-		// }
-		// free(input);
-		// free(words);
+		printf_cmnd_list(creat_cmnd_list(words, count_cmnds(words)));
+		
 	}
 	return (0);
 }
+

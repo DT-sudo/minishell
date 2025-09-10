@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 14:38:44 by dt                #+#    #+#             */
-/*   Updated: 2025/09/06 18:44:14 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/10 13:42:56 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 t_input	*move_ptr_cmnd(t_input *next_cmnd)
 {
 	if (next_cmnd == NULL)
-		exit(1);
-	while (next_cmnd->type != TOKEN_PIPE && next_cmnd != 0)
+		return (NULL);
+	while (next_cmnd != NULL && next_cmnd->type != TOKEN_PIPE && next_cmnd != 0)
 		next_cmnd = next_cmnd->next;
-	if (next_cmnd->type == TOKEN_PIPE)
+	if (next_cmnd != NULL && next_cmnd->type == TOKEN_PIPE)
 		return (next_cmnd->next);
 	return (NULL);
 }
@@ -32,68 +32,81 @@ void	set_apnd_hered_pipe(t_cmnd *node)
 	i = 0;
 	while (node->argv_type[i])
 	{
-		if (node->argv_type[i] == TOKEN_APPND)
+		if ((*(node->argv_type[i])) == TOKEN_APPND)
+		{
 			node->appnd = true;
-		else if (node->argv_type[i] == TOKEN_HERE)
+			// write(1, "tr1\n", 4);
+		}
+		else if (*(node->argv_type[i]) == TOKEN_HERE)
+		{
 			node->heredoc = true;
-		else if (node->argv_type[i] == TOKEN_PIPE)
-			node->has_pipe = true;
+			// write(1, "tr2\n", 4);
+		}
 		i++;
 	}
 }
 
-t_cmnd	*list_nodes(t_cmnd *node, t_cmnd **list, int cmnd_qntt)
-{
-	int			j;
-	static int	i;
-
-	j = 0;
-	if (node == NULL)
-		return NULL;
-	list[i] = node;
-	if (i == cmnd_qntt)
-	{
-		while (j < i)
-		{
-			list[j]->next = list[j + 1];
-			j++;
-		}
-		list[j] = NULL;
-		i = 0;
-	}
-	i++;
-}
-
+// sets filename after >>\>\<\<<
 void	set_filename(t_cmnd *node)
 {
 	int	i;
 
 	i = 0;
-	while (!(*(node->argv_type[i]) >= TOKEN_RDR_IN
-			&& *(node->argv_type[i]) <= TOKEN_HERE) && *(node->argv_type[i]) != NULL)
+	while ((node->argv_type[i]) != NULL
+		&& !(*(node->argv_type[i]) >= TOKEN_RDR_IN
+			&& *(node->argv_type[i]) <= TOKEN_HERE))
 		i++;
-	if ((*(node->argv_type[i]) == 4 || *(node->argv_type[i]) == 7)
-		&& *(node->argv_type[i]) != NULL)
-		node->rd_in_filename = node->argv[i];
-	else if ((*(node->argv_type[i]) == 5 || *(node->argv_type[i]) == 6)
-		&& *(node->argv_type[i]) != NULL)
-		node->rd_out_filename = node->argv[i];
+	if (node->argv_type[i] != NULL && node->argv[i + 1] != NULL)
+	{
+		if ((*(node->argv_type[i]) == TOKEN_RDR_IN
+				|| *(node->argv_type[i]) == TOKEN_HERE))
+			node->rd_in_filename = node->argv[i + 1];
+		else if ((*(node->argv_type[i]) == TOKEN_RDR_OUT
+				|| *(node->argv_type[i]) == TOKEN_APPND))
+			node->rd_out_filename = node->argv[i + 1];
+	}
+}
+
+// puts values to every t_cmnd node and connect them to each other 
+void	list_nodes(t_cmnd *node, t_cmnd **list, int cmnd_qntt)
+{
+	int			j;
+	static int	i = 0;
+
+	j = 0;
+	if (node == NULL)
+		return ;
+	list[i] = node;
+	i++;
+	if (i == cmnd_qntt)
+	{
+		while (j < cmnd_qntt - 1)
+		{
+			list[j]->next = list[j + 1];
+			j++;
+		}
+		list[j]->next = NULL;
+		i = 0;
+	}
 }
 
 // setup of each cmnd node and list them together
 t_cmnd	*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd, int cmnd_qntt,
-		t_cmnd *list)
+		t_cmnd **list, int dpth)
 {
-	static int	c;
-	t_cmnd		*new_node;
+	t_cmnd	*new_node;
 
 	do_cmnd_array(next_cmnd, node, count_cmnd_len(next_cmnd));
 	do_cmnd_array_type(next_cmnd, node, count_cmnd_len(next_cmnd));
 	set_apnd_hered_pipe(node);
 	set_filename(node);
-	list_nodes(node, &list, cmnd_qntt);
-	while (c++ < cmnd_qntt && cmnd_qntt > 1)
+	list_nodes(node, list, cmnd_qntt);
+	if (dpth < cmnd_qntt - 1)
 	{
+		next_cmnd = move_ptr_cmnd(next_cmnd);
+		// printf("\n%s\n", next_cmnd->word);
+		if (next_cmnd == NULL)
+			return (node);
 		new_node = malloc(sizeof(t_cmnd));
 		if (new_node == NULL)
 		{
@@ -101,25 +114,27 @@ t_cmnd	*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd, int cmnd_qntt,
 			exit(0);
 		}
 		set_to_zero(new_node);
-		new_node = setup_cmnd_node(new_node, move_ptr_cmnd(next_cmnd),
-				cmnd_qntt, list);
+		new_node = setup_cmnd_node(new_node, next_cmnd, cmnd_qntt, list, dpth
+				+ 1);
 	}
-	c = 0;
 	return (node);
 }
 
-t_cmnd	*creat_cmnd_list(t_input *words, int size)
+// main func
+t_cmnd	**creat_cmnd_list(t_input *words, int size)
 {
 	int		i;
 	int		cmnd_qntt;
 	t_cmnd	*cmnd_node;
-	t_cmnd	*list;
+	t_cmnd	**list;
 
 	if (words == NULL)
 		return (NULL);
 	i = 0;
+	// count_cmnds == cmnd1 | cmnd2 | ...
 	cmnd_qntt = count_cmnds(words);
 	list = malloc(sizeof(t_cmnd *) * (cmnd_qntt + 1));
+	// cmnd node of type t_cmnd
 	cmnd_node = malloc(sizeof(t_cmnd));
 	if (cmnd_node == NULL || list == NULL)
 	{
@@ -127,6 +142,6 @@ t_cmnd	*creat_cmnd_list(t_input *words, int size)
 		exit(1);
 	}
 	set_to_zero(cmnd_node);
-	setup_cmnd_node(cmnd_node, words, cmnd_qntt, list);
-	return (cmnd_node);
+	setup_cmnd_node(cmnd_node, words, cmnd_qntt, list, 0);
+	return (list);
 }
