@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 14:43:27 by dt                #+#    #+#             */
-/*   Updated: 2025/09/08 18:10:46 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/16 13:05:28 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ char	*strjoin_modified(char const *s1, char const *s2)
 	size_t	len2;
 	size_t	i;
 
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
+	len1 = ft_strlenn(s1);
+	len2 = ft_strlenn(s2);
 	if (!s1 || !s2)
 		return (NULL);
 	i = 0;

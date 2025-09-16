@@ -6,11 +6,13 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/10 13:54:37 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/16 13:05:48 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int exit_status = 0; 
 
 // func for tests
 void	print_og_env(char **envp)
@@ -24,19 +26,20 @@ void	print_og_env(char **envp)
 		printf("%s\n", envp[i++]);
 }
 
-// // test main
+// // OLHA main
 // int	main(int argc, char **argv, char **envp)
 // {
 // 	char	*input;
 // 	char	**array;
 // 	t_input	*words;
 // 	t_env	*env;
-
+	 
+	
 // 	t_env	*env_tmp;
 // 	t_input *tmp_wrds;
 // 	char 	**env_array;
 // 	int		i;
-
+	
 // 	env = env_init(envp);
 // 	////
 // 	// env_tmp = env;
@@ -56,6 +59,7 @@ void	print_og_env(char **envp)
 // 	// 	i++;
 // 	// }
 // 	////
+// 	read_history(".minishell_history");
 // 	while (42)
 // 	{
 // 		i = 0;
@@ -64,7 +68,9 @@ void	print_og_env(char **envp)
 // 		words = NULL;
 // 		input = readline("Minishell % ");
 // 		if (input == NULL)
-// 			break ;
+// 			break;
+// 		if (*input)
+//         	add_history(input);
 // 		if (*input == '\0' || !validate_input(input))
 // 		{
 // 			free(input);
@@ -75,28 +81,33 @@ void	print_og_env(char **envp)
 // 		while (tmp_wrds != NULL)
 // 		{
 // 			i += 1;
-// 			printf("\n#%d. word: %s, type: %d", i, tmp_wrds->word,
-				// tmp_wrds->type);
+// 			// printf("\n#%d. word: %s, type %d", i, tmp_wrds->word, tmp_wrds->type);
 // 			tmp_wrds = tmp_wrds->next;
 // 		}
-// 		printf("\n");
-// 		array = do_input_array(words, count_list_input(words));
+// 		// printf("\n\n");
+// 				// SUS !!!!!!!
+// 		array = do_input_array(words, count_cmnd_len(words));
+
+		
+// 		///
+// 		// i = 0;
+// 		// array = do_input_array(words, count_cmnd_len(words));
+// 		// printf("\n\nLenght of the list: %d\n\n", count_cmnd_len(words));
+// 		// while (array[i])
+// 		// 	printf("%s -> ", array[i++]);
+// 		// printf("%s\n", array[i]);
+// 		///
 // 		env_array = do_env_array(env, count_list_env(env));
-// 		///
-// 		i = 0;
-// 		// array = do_input_array(words, count_list_input(words));
-// 		printf("\n\nLenght of the list: %d\n\n", count_list_input(words));
-// 		while (array[i])
-// 			printf("%s -> ", array[i++]);
-// 		printf("%s\n", array[i]);
-// 		///
+// 		what_command(array, &env, env_array);
+
 // 		free(input);
 // 		free(words);
 // 	}
+// 	write_history(".minishell_history");
 // 	return (0);
 // }
 
-// util_func just for tests
+
 void	printf_cmnd_list(t_cmnd **list)
 {
 	int i, j, n;
