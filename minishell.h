@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: dtereshc <dtereshc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/16 13:17:50 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/11 17:16:22 by dtereshc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ typedef struct s_cmnd
 	char *rd_in_filename;  // filename right after </<<	reads from stdin to file
 	bool			appnd;
 	bool			heredoc;
-	bool			has_pipe;
+	// bool			has_pipe;
 	struct s_cmnd *next; // link to the next cmnd
 }					t_cmnd;
 
