@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 17:31:02 by dt                #+#    #+#             */
-/*   Updated: 2025/09/06 18:51:03 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/16 13:15:09 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,27 @@ int	count_cmnd_len(t_input *words)
 		i++;
 	}
 	return (i);
+}
+
+// SUS
+char	**do_input_array(t_input *input, int size)
+{
+	int		i;
+	char	**res;
+	t_input	*tmp;
+
+	if (input == NULL)
+		return (NULL);
+	i = 0;
+	tmp = input;
+	res = malloc(sizeof(char *) * size + 1);
+	while (tmp != NULL && i < size)
+	{	
+		res[i++] = tmp->word;
+		tmp = tmp->next;
+	}
+	res[i] = NULL;
+	return (res);
 }
 
 // returns malloced array of one command

@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/06 18:39:55 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/16 13:17:50 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ typedef struct s_input
 // cmnds structure
 typedef struct s_cmnd
 {
-	char **argv; // cmnd + parametrs
-	token_type_t			**argv_type;
+	char			**argv;
+	token_type_t	**argv_type;
 	char *rd_out_filename; // filename right after >/>>
 	char *rd_in_filename;  // filename right after </<<	reads from stdin to file
 	bool			appnd;
@@ -80,11 +80,11 @@ typedef struct s_env
 // creat_cmnd_list.c
 t_input				*move_ptr_cmnd(t_input *next_cmnd);
 void				set_apnd_hered_pipe(t_cmnd *node);
-t_cmnd				*list_nodes(t_cmnd *node, t_cmnd **list, int cmnd_qntt);
+void				list_nodes(t_cmnd *node, t_cmnd **list, int cmnd_qntt);
 void				set_filename(t_cmnd *node);
 t_cmnd				*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd,
-						int cmnd_qntt, t_cmnd *list);
-t_cmnd				*creat_cmnd_list(t_input *words, int size);
+						int cmnd_qntt, t_cmnd **list, int dpth);
+t_cmnd				**creat_cmnd_list(t_input *words, int size);
 
 // cmnd_list_utils.c
 void				set_to_zero(t_cmnd *cmnd_node);
@@ -92,6 +92,7 @@ int					count_cmnds(t_input *words);
 int					count_cmnd_len(t_input *words);
 void				do_cmnd_array(t_input *words, t_cmnd *node, int size);
 void				do_cmnd_array_type(t_input *words, t_cmnd *node, int size);
+char				**do_input_array(t_input *input, int size); // SUS
 
 // validate_input.c
 int					has_backslash(char *input);
@@ -128,23 +129,16 @@ int					*tk_d_quotes(char *input, int res[3]);
 char				*strjoin_modified(char const *s1, char const *s2);
 char				**do_env_array(t_env *env, int size);
 int					count_list_env(t_env *env);
-// char				**do_cmnd_array(t_input *words, int size); // del this
-// t_cmnd			*do_cmnd_list(t_input *words, t_cmnd *cmnd_list, int size);
-// del this
 
 // utils.c
 void				ft_clean(t_input *words, char *input);
-size_t				ft_strlen(const char *s);
+size_t				ft_strlenn(const char *s);
 
 // what_command.c
 bool				is_command_buildin(char **input);
-void				what_command(char **input, t_env *my_env, char **array_env);
-int					echo_command_implementation(char **input);
+int					echo_command_implementation(char **input, t_env **env);
 int					pwd_command_implementation(t_env *my_env);
-// int 				export_command_implementation(char **input);
-// int 				unset_command_implementation(char **input);
 int					cd_command_implementation(char **input, t_env *my_env);
-// void 				exit_command_implementation(t_env *my_env);
 
 // testing help_file.c
 t_input				*initialize_command(void);
@@ -155,10 +149,8 @@ int					standard_cd(char **input, t_env *env);
 int					previous_dir(char **input, t_env *env);
 
 // export
-int					export_command_implementation(char **input, t_env *env,
-						char **array_env);
 char				**bubble_sort(char **array, int size);
-int					only_export(char **input, char **array_env);
+int					only_export(char **input, t_env *env);
 
 int					other_commands_implementation(char **input, t_env *env);
 char				*ft_strjoin_free(char *s1, const char *s2);
@@ -167,6 +159,13 @@ char				**env_list_to_envp(t_env *env);
 // env
 t_env				*env_init(char **envp);
 void				print_my_env(t_env *env);
+
+// Updated function declarations
+int					export_command_implementation(char **input, t_env **env,
+						char **array_env);
+int					unset_command_implementation(t_env **env, char **input);
+void				what_command(char **input, t_env **my_env,
+						char **array_env);
 
 // // parsing.c
 // t_input				*make_word(t_input *words, char *input);

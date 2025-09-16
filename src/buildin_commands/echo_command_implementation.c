@@ -3,16 +3,68 @@
 /*                                                        :::      ::::::::   */
 /*   echo_command_implementation.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olcherno <olcherno@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 23:26:59 by olcherno          #+#    #+#             */
-/*   Updated: 2025/08/31 22:53:50 by olcherno         ###   ########.fr       */
+/*   Updated: 2025/09/16 13:04:18 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int echo_command_implementation(char **input)
+char* get_env_value(char *input, t_env **env)
+{
+    t_env *current = *env;
+    while (current)
+    {
+        if (ft_strcmp(current->key, input) == 0)
+            return (current->value);
+        current = current->next;
+    }
+    return (NULL);
+}
+
+char **dollar_expand(char **input, t_env **env)
+{
+    int i;
+    char *env_value;
+    char *new_str;
+    extern int exit_status;
+
+    i = 1;
+    while (input[i] != NULL)
+    {
+        if (ft_strncmp(input[i], "$", 1) == 0 && ft_strlen(input[i]) > 1)
+        {
+            //printf("DOLLAR EXPAND: %s\n", input[i]);
+            if (ft_strcmp(input[i], "$?") == 0)
+            {
+                new_str = ft_itoa(exit_status);
+                free(input[i]);
+                input[i] = new_str;
+            }
+            else
+            {
+                env_value = get_env_value(input[i] + 1, env); // Skip the '$' character
+                if (env_value)
+                {
+                    new_str = ft_strdup(env_value);
+                    free(input[i]);
+                    input[i] = new_str;
+                }
+                else
+                {
+                    free(input[i]);
+                    input[i] = ft_strdup(""); // Replace with empty string if not found 
+                }
+            }
+        }
+        i++;
+    }
+    return input;
+}
+
+int echo_command_implementation(char **input, t_env **env)
 {
     int	i;
     int y;
@@ -26,7 +78,7 @@ int echo_command_implementation(char **input)
 		n_FLAG = 1;
         y = 2;
 	}
-
+    input = dollar_expand(input, env);  // Put this back!
     while (input[y] != NULL)
     {
         printf("%s", input[y]);

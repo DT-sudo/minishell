@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   what_command.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtereshc <dtereshc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/09/01 19:08:37 by dtereshc         ###   ########.fr       */
+/*   Updated: 2025/09/16 13:06:47 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 
 #include "../minishell.h"
+
+// Define the global variable
 
 //WRONG LOGIC !!!
 
@@ -38,30 +40,32 @@ bool	is_command_buildin(char **input)
 		return (false);
 }
 
-void	which_buildin_command(char **input, t_env *my_env, char **array_env)
+void	which_buildin_command(char **input, t_env **my_env, char **array_env)
 {
-	int	exit_status;
-
-
+	int exit_status; //dt changes??
+	
 	if (ft_strncmp(input[0], "echo", 4) == 0)
-		exit_status = echo_command_implementation(input);
+		exit_status = echo_command_implementation(input, my_env);
 	else if (ft_strncmp(input[0], "pwd", 3) == 0)
-		pwd_command_implementation(my_env);
+		exit_status = pwd_command_implementation(*my_env);
 	else if (ft_strncmp(input[0], "export", 6) == 0)
-		export_command_implementation(input, my_env, array_env);
-	// else if (ft_strncmp(input[0], "unset", 5) == 0)
-	// 	unset_command_implementation(my_env);
+		exit_status = export_command_implementation(input, my_env, array_env);
+	else if (ft_strncmp(input[0], "unset", 5) == 0)
+		exit_status = unset_command_implementation(my_env, input);
 	else if (ft_strncmp(input[0], "cd", 2) == 0)
-		cd_command_implementation(input, my_env);
+		exit_status = cd_command_implementation(input, *my_env);
 	// else if (ft_strncmp(input[0], "exit", 4) == 0)
 		// exit_command_implementation(my_env);
 	else if (ft_strncmp(input[0], "env", 3) == 0)
-		print_my_env(my_env);
-	ft_printf("which_buildin_command: %s\n", input[0]);
-	ft_printf("exit_status: %d\n", exit_status);
+	{
+		print_my_env(*my_env);
+		exit_status = 0;
+	}
+	// Temporary debug - remove this later
+	//printf("DEBUG: Command '%s' returned exit_status: %d\n", input[0], exit_status);
 }
 
-void	what_command(char** input, t_env *my_env, char** array_env)
+void	what_command(char** input, t_env **my_env, char** array_env)
 {
 	if (is_command_buildin(input))
 		which_buildin_command(input, my_env, array_env);
