@@ -1,35 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/03 15:24:41 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/18 14:22:54 by dt               ###   ########.fr       */
+/*   Created: 2025/09/16 15:52:39 by dt                #+#    #+#             */
+/*   Updated: 2025/09/16 16:23:01 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../minishell.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+
+// if (cmnd->appnd)...
+// >
+int rdr_out(t_cmnd *cmnd)
 {
-	size_t	i;
+    
+}
 
-	if (!s1 && !s2)
-		return (0);
-	if (!s1)
-		return (-1);
-	if (!s2)
-		return (1);
-	i = 0;
-	while (s1[i] && s2[i] && i < n)
-	{
-		if (s1[i] != s2[i])
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-		i++;
-	}
-	if (i < n)
-		return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-	return (0);
+// >>
+int rdr_out_appnd()
+{
+    
+}
+
+// < 
+int rdr_in()
+{
+    
 }

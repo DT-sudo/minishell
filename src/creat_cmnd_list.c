@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 14:38:44 by dt                #+#    #+#             */
-/*   Updated: 2025/09/10 13:42:56 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/18 16:14:56 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_input	*move_ptr_cmnd(t_input *next_cmnd)
 	return (NULL);
 }
 
+// changed (adjusted)
 // sets node appnd/heredoc/pipe with argv_type
 void	set_apnd_hered_pipe(t_cmnd *node)
 {
@@ -33,20 +34,19 @@ void	set_apnd_hered_pipe(t_cmnd *node)
 	while (node->argv_type[i])
 	{
 		if ((*(node->argv_type[i])) == TOKEN_APPND)
-		{
 			node->appnd = true;
-			// write(1, "tr1\n", 4);
-		}
 		else if (*(node->argv_type[i]) == TOKEN_HERE)
-		{
 			node->heredoc = true;
-			// write(1, "tr2\n", 4);
-		}
+		else if (*(node->argv_type[i]) == TOKEN_RDR_IN)
+			node->rdr_in = true;
+		else if (*(node->argv_type[i]) == TOKEN_RDR_OUT)
+			node->rdr_out = true;
 		i++;
 	}
 }
 
-// sets filename after >>\>\<\<<
+// changed -here
+// sets filename after >>\>\<
 void	set_filename(t_cmnd *node)
 {
 	int	i;
@@ -54,12 +54,12 @@ void	set_filename(t_cmnd *node)
 	i = 0;
 	while ((node->argv_type[i]) != NULL
 		&& !(*(node->argv_type[i]) >= TOKEN_RDR_IN
-			&& *(node->argv_type[i]) <= TOKEN_HERE))
+			&& *(node->argv_type[i]) <= TOKEN_APPND))
 		i++;
-	if (node->argv_type[i] != NULL && node->argv[i + 1] != NULL)
+		// node->argv_type[i + 1] == TOKEN_WORD
+	if (node->argv_type[i] != NULL && node->argv[i + 1] != NULL) 
 	{
-		if ((*(node->argv_type[i]) == TOKEN_RDR_IN
-				|| *(node->argv_type[i]) == TOKEN_HERE))
+		if (*(node->argv_type[i]) == TOKEN_RDR_IN)
 			node->rd_in_filename = node->argv[i + 1];
 		else if ((*(node->argv_type[i]) == TOKEN_RDR_OUT
 				|| *(node->argv_type[i]) == TOKEN_APPND))
@@ -67,7 +67,7 @@ void	set_filename(t_cmnd *node)
 	}
 }
 
-// puts values to every t_cmnd node and connect them to each other 
+// puts values to every t_cmnd node and connect them to each other
 void	list_nodes(t_cmnd *node, t_cmnd **list, int cmnd_qntt)
 {
 	int			j;
@@ -98,13 +98,12 @@ t_cmnd	*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd, int cmnd_qntt,
 
 	do_cmnd_array(next_cmnd, node, count_cmnd_len(next_cmnd));
 	do_cmnd_array_type(next_cmnd, node, count_cmnd_len(next_cmnd));
-	set_apnd_hered_pipe(node);
-	set_filename(node);
+	set_apnd_hered_pipe(node); //
+	set_filename(node);        //
 	list_nodes(node, list, cmnd_qntt);
 	if (dpth < cmnd_qntt - 1)
 	{
 		next_cmnd = move_ptr_cmnd(next_cmnd);
-		// printf("\n%s\n", next_cmnd->word);
 		if (next_cmnd == NULL)
 			return (node);
 		new_node = malloc(sizeof(t_cmnd));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmnd_list_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtereshc <dtereshc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 17:31:02 by dt                #+#    #+#             */
-/*   Updated: 2025/09/11 17:27:29 by dtereshc         ###   ########.fr       */
+/*   Updated: 2025/09/19 18:50:30 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,15 @@ void	set_to_zero(t_cmnd *cmnd_node)
 	cmnd_node->argv_type = NULL;
 	cmnd_node->rd_out_filename = NULL;
 	cmnd_node->rd_in_filename = NULL;
+	cmnd_node->rdr_in = false;
+	cmnd_node->rdr_out = false;
 	cmnd_node->appnd = false;
 	cmnd_node->heredoc = false;
+	cmnd_node->pipe = false;
 	cmnd_node->next = NULL;
 }
 
-// counts how many commands within one input by  '|'
+// counts how many commands within one input by '|'
 int	count_cmnds(t_input *words)
 {
 	int		i;
@@ -123,6 +126,8 @@ void	do_cmnd_array_type(t_input *words, t_cmnd *node, int size)
 		res_type[i++] = &tmp->type;
 		tmp = tmp->next;
 	}
+	if (tmp->type == TOKEN_PIPE)
+		node->pipe = true;
 	res_type[i] = NULL;
 	node->argv_type = res_type;
 }
