@@ -6,13 +6,12 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 23:26:59 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/19 19:02:14 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/21 18:16:12 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// while != >> | > | << | <
 char	*get_env_value(char *input, t_env **env)
 {
 	t_env	*current;
@@ -79,35 +78,54 @@ void	decide_tt(t_cmnd **cmnd_list)
 	else if ((*cmnd_list)->pipe)
 }
 
-print_res(char *str, char *argv_type)
+// prints needed str to needed fd any way, returns int 0 if echo not complex
+// int 1 if complex -> has |, >, >>, <. ->  
+// (print_res(res, input->argv_type[y], flag))
+int print_res(char *str, char *argv_type, int flag)
 {
+	int fd;
 	
+	//echo not complex
+	if (argv_type == NULL)
+		return 0;
+	fd = decide_fd(argv_type);
+	// 1. open file, get fd
+	// 2. write to the needed fd
 }
-
 int decide_fd(char *str, char *argv_type)
 {
-	
+	if (argv_type == TOKEN_PIPE)
+		return ;
+	else if (argv_type == TOKEN_RDR_IN)
+		return ;
+	else if (argv_type == TOKEN_RDR_OUT)
+		return ;
+	else if (argv_type == TOKEN_APPND)
+		return ;
 }
-char	*creat_str(char *str, char *wrd, int flag)
+
+char	*creat_str(char *str, char *wrd,  int flag, t_cmnd *next_wrd)
 {
-	int		res_len;
-	int		wrd_len;
 	int		i;
 	char	*res;
 
 	i = 0;
-	res_len = (int)ft_strlen(res);
-	wrd_len = (int)ft_strlen(wrd);
-	size = res_len + wrd_len + 1 + flag;
+	size = (int)ft_strlen(str) + (int)ft_strlen(wrd)+ flag + 1;
+	if ((int)ft_strlen(wrd) != 0)
+		size++;
 	res = malloc(sizeof(char) * size);
-	while (i < res_len && str[i])
-		res[i++] = str[i];
-	i = 1;
-	while (i < wrd_len && wrd_len[i])
-		res[i++ + res_len] = wrd_len[i];
-	if (flag)
-		res[i++] = '\n';
-	res[i] = '\0';
+	while (i < (int)ft_strlen(res) && str[i])
+		res[i++] = str[i];	
+	if (ft_strlen(wrd))
+	{
+		res[i] = ' ';
+		i = 0;
+		while (i < (int)ft_strlen(wrd) && wrd[i])
+			res[++i + (int)ft_strlen(str)] = wrd[i];
+	}
+	if (flag && next_wrd == NULL) 
+		res[++i + (int)ft_strlen(str)] = '\n';
+	res[++i + (int)ft_strlen(str)] = '\0';
 	return (res);
 }
 
@@ -120,30 +138,30 @@ int	echo_command_implementation(t_cmnd **cmnd_list, t_env **env)
 	char	*res_tmp;
 	t_cmnd	*input;
 
-	input = *cmnd_list;
-	flag = 0;
 	y = 1;
 	res = "";
+	flag = 1;
+	input = *cmnd_list;
 	if (input->argv[1] && ft_strncmp(input->argv[1], "-n", 3) == 0)
 	{
-		flag = 1;
+		flag = 0;
 		y = 2;
 	}
 	if ((*cmnd_list)->heredoc)
 	{ // make in one line func
 		printf("error message");
-		break ;
+		return(-1);
 	}
 	input->argv = dollar_expand(input->argv, env); // <-..
 	while (input->argv[y] != NULL && !(input->argv_type[y] >= TOKEN_PIPE
 			&& input->argv_type[y] <= TOKEN_HERE))
 	{
 		res_tmp = res;
-		res = creat_str(res, input->argv[y++]);
+		res = creat_str(res, input->argv[y++], flag, input->next);
 		if (*res_tmp != "")
 			free(res_tmp);
 	}
-	if (!(print_res(res, input->argv_type[y], flag)))
+	if (!(print_res(res, input->argv_type[y], flag))) 
 		printf("%s", res);
 	return (0);
 }
