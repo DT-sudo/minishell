@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 17:31:02 by dt                #+#    #+#             */
-/*   Updated: 2025/09/19 18:50:30 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/30 18:15:07 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 void	set_to_zero(t_cmnd *cmnd_node)
 {
 	cmnd_node->argv = NULL;
+	cmnd_node->full_argv = NULL;
 	cmnd_node->argv_type = NULL;
-	cmnd_node->rd_out_filename = NULL;
-	cmnd_node->rd_in_filename = NULL;
+	cmnd_node->rdrs = NULL;
 	cmnd_node->rdr_in = false;
 	cmnd_node->rdr_out = false;
 	cmnd_node->appnd = false;
@@ -48,51 +48,69 @@ int	count_cmnds(t_input *words)
 // counts how many tokens within one command
 int	count_cmnd_len(t_input *words)
 {
-	int		i;
 	t_input	*tmp;
 
+	int i;
 	i = 0;
 	if (words == NULL)
 		return (0);
 	tmp = words;
 	while (tmp != NULL && tmp->type != TOKEN_PIPE)
 	{
+		if (!(tmp->type == TOKEN_RDR_IN || tmp->type == TOKEN_RDR_OUT
+				|| tmp->type == TOKEN_APPND || tmp->type == TOKEN_HERE))
+			i++;
+		else
+			i--;
 		tmp = tmp->next;
-		i++;
 	}
+	// printf("\nLength is: %d", i);
 	return (i);
 }
 
-// SUS
-char	**do_input_array(t_input *input, int size)
-{
-	int		i;
-	char	**res;
-	t_input	*tmp;
 
-	if (input == NULL)
-		return (NULL);
+
+// chage to ft_strdup(tmp->word); for right free(t_input) work
+// returns malloced array of one command
+void	do_cmnd_array(t_input *words, t_cmnd *node, int size)
+{
+	t_input	*tmp;
+	char	**res;
+
+	int i, j; // del j
+	if (words == NULL)
+		return ;
 	i = 0;
-	tmp = input;
-	res = malloc(sizeof(char *) * size + 1);
-	while (tmp != NULL && i < size)
-	{	
-		res[i++] = tmp->word;
+	j = 0; // del
+	tmp = words;
+	res = malloc(sizeof(char *) * (size + 1));
+	if (res == NULL)
+		exit(1);
+	while (tmp != NULL && tmp->type != TOKEN_PIPE)
+	{
+		if (!(tmp->type == TOKEN_RDR_IN || tmp->type == TOKEN_RDR_OUT
+				|| tmp->type == TOKEN_APPND || tmp->type == TOKEN_HERE))
+		{
+			res[i++] = tmp->word;
+			// printf("\n#%d. %s", j++, tmp->word);
+		}
+		else
+			tmp = tmp->next;
 		tmp = tmp->next;
 	}
 	res[i] = NULL;
-	return (res);
+	node->argv = res;
 }
 
 // returns malloced array of one command
-void	do_cmnd_array(t_input *words, t_cmnd *node, int size)
+void	do_full_cmnd_array(t_input *words, t_cmnd *node, int size)
 {
 	int		i;
 	t_input	*tmp;
 	char	**res;
 
 	if (words == NULL)
-		return;
+		return ;
 	i = 0;
 	tmp = words;
 	res = malloc(sizeof(char *) * (size + 1));
@@ -101,33 +119,37 @@ void	do_cmnd_array(t_input *words, t_cmnd *node, int size)
 	while (tmp != NULL && tmp->type != TOKEN_PIPE)
 	{
 		res[i++] = tmp->word;
+		// chage to ft_strdup(tmp->word); for right free(t_input) work
 		tmp = tmp->next;
 	}
 	res[i] = NULL;
-	node->argv = res;
+	node->full_argv = res;
 }
 
 // makes array of each token type of every cmnd token
 void	do_cmnd_array_type(t_input *words, t_cmnd *node, int size)
 {
-	int		i;
-	t_input	*tmp;
+	int				i;
+	t_input			*tmp;
 	token_type_t	**res_type;
 
 	i = 0;
 	if (words == NULL)
-		return;
+		return ;
 	tmp = words;
 	res_type = malloc(sizeof(token_type_t *) * (size + 1));
 	if (res_type == NULL)
 		exit(1);
-	while (tmp != NULL && tmp->type != TOKEN_PIPE)
+	while (tmp != NULL)
 	{
+		if (tmp->type == TOKEN_PIPE)
+		{
+			node->pipe = true;
+			break ;
+		}
 		res_type[i++] = &tmp->type;
 		tmp = tmp->next;
 	}
-	if (tmp->type == TOKEN_PIPE)
-		node->pipe = true;
 	res_type[i] = NULL;
 	node->argv_type = res_type;
 }

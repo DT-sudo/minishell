@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/18 17:14:20 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/30 14:46:43 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,19 @@ typedef struct s_input
 	struct s_input	*next;
 }					t_input;
 
-// changed (adjusted)
-// cmnds structure
+typedef struct s_rdrs
+{
+	token_type_t	redir_type;
+	char			*filename;
+	struct s_rdrs	*next;
+}					t_rdrs;
+
 typedef struct s_cmnd
 {
 	char			**argv;
+	char			**full_argv;
 	token_type_t	**argv_type;
-	char *rd_out_filename; // filename after >/>>
-	char *rd_in_filename;  // filename after </<<
+	struct s_rdrs	*rdrs; // new
 	bool rdr_in;           // <
 	bool rdr_out;          // >
 	bool appnd;            // >>
@@ -83,19 +88,16 @@ typedef struct s_env
 // creat_cmnd_list.c
 t_input				*move_ptr_cmnd(t_input *next_cmnd);
 void				set_apnd_hered_pipe(t_cmnd *node);
-void				list_nodes(t_cmnd *node, t_cmnd **list, int cmnd_qntt);
-void				set_filename(t_cmnd *node);
-t_cmnd				*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd,
-						int cmnd_qntt, t_cmnd **list, int dpth);
-t_cmnd				**creat_cmnd_list(t_input *words, int size);
+t_cmnd				*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd);
+t_cmnd				*creat_cmnd_list(t_input *words);
 
 // cmnd_list_utils.c
 void				set_to_zero(t_cmnd *cmnd_node);
 int					count_cmnds(t_input *words);
 int					count_cmnd_len(t_input *words);
 void				do_cmnd_array(t_input *words, t_cmnd *node, int size);
+void				do_full_cmnd_array(t_input *words, t_cmnd *node, int size);
 void				do_cmnd_array_type(t_input *words, t_cmnd *node, int size);
-char	**do_input_array(t_input *input, int size); // SUS
 
 // validate_input.c
 int					has_backslash(char *input);
@@ -156,7 +158,7 @@ int					previous_dir(char **input, t_env *env);
 char				**bubble_sort(char **array, int size);
 int					only_export(char **input, t_env *env);
 
-int					other_commands_implementation(char **input, t_env *env);
+int					other_commands_implementation(char **input, t_env **env);
 char				*ft_strjoin_free(char *s1, const char *s2);
 char				**env_list_to_envp(t_env *env);
 
@@ -167,7 +169,7 @@ void				print_my_env(t_env *env);
 // what_command.c
 void				what_command(t_cmnd **cmnd_list, t_env **my_env,
 						char **array_env);
-void				which_buildin_command(t_cmnd **cmnd_list, t_env **my_env,
+int					which_buildin_command(t_cmnd *cmnd, t_env **my_env,
 						char **array_env);
 
 // Updated function declarations
