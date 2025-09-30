@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 17:31:02 by dt                #+#    #+#             */
-/*   Updated: 2025/09/30 18:15:07 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/30 18:20:32 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,24 @@ int	count_cmnds(t_input *words)
 
 // counts how many tokens within one command
 int	count_cmnd_len(t_input *words)
+{
+	int		i;
+	t_input	*tmp;
+
+	i = 0;
+	if (words == NULL)
+		return (0);
+	tmp = words;
+	while (tmp != NULL && tmp->type != TOKEN_PIPE)
+	{
+		tmp = tmp->next;
+		i++;
+	}
+	return (i);
+}
+
+// counts how many tokens within one command skips redirs and filenames 
+int	count_cmnd_len_argv(t_input *words)
 {
 	t_input	*tmp;
 

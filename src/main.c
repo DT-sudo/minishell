@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/30 18:11:39 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/30 18:45:10 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,11 @@ void	printf_cmnd_list(t_cmnd *list)
 			printf("[%s]->", *(tmp->argv));
 			tmp->argv++;
 		}
-		printf("NULL");
+		printf("NULL\n");
 		i = 0;
 		while (tmp->rdrs)
 		{
-			printf("\n\n#%d redir\nType:%d,\nfilename: %s\n", i++,
+			printf("\n#%d redir\nType:%d,\nfilename: %s\n", i++,
 				(int)tmp->rdrs->redir_type, tmp->rdrs->filename);
 			tmp->rdrs = tmp->rdrs->next;
 		}

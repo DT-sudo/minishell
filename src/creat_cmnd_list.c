@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 14:38:44 by dt                #+#    #+#             */
-/*   Updated: 2025/09/30 18:14:45 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/30 18:21:49 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,12 @@ void do_rdrs(t_input *next_cmnd, t_cmnd *node)
 t_cmnd	*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd)
 {
 	t_cmnd		*new_node;
+	int size_argv;
 	int size;
 	
-	size =  count_cmnd_len(next_cmnd);
-	do_cmnd_array(next_cmnd, node, size);
+	size_argv = count_cmnd_len_argv(next_cmnd);
+	size = count_cmnd_len(next_cmnd);
+	do_cmnd_array(next_cmnd, node, size_argv);
 	do_full_cmnd_array(next_cmnd, node, size);
 	do_cmnd_array_type(next_cmnd, node, size);
 	do_rdrs(next_cmnd, node);

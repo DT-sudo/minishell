@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/30 14:46:43 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/30 18:37:38 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,17 @@ typedef struct s_rdrs
 	struct s_rdrs	*next;
 }					t_rdrs;
 
+// cmnds structure
 typedef struct s_cmnd
 {
 	char			**argv;
 	char			**full_argv;
 	token_type_t	**argv_type;
-	struct s_rdrs	*rdrs; // new
-	bool rdr_in;           // <
-	bool rdr_out;          // >
-	bool appnd;            // >>
-	bool heredoc;          // <<
+	struct s_rdrs *rdrs; // new
+	bool rdr_in;         // <
+	bool rdr_out;        // >
+	bool appnd;          // >>
+	bool heredoc;        // <<
 	bool			pipe;
 	struct s_cmnd	*next;
 }					t_cmnd;
@@ -95,6 +96,7 @@ t_cmnd				*creat_cmnd_list(t_input *words);
 void				set_to_zero(t_cmnd *cmnd_node);
 int					count_cmnds(t_input *words);
 int					count_cmnd_len(t_input *words);
+int					count_cmnd_len_argv(t_input *words);
 void				do_cmnd_array(t_input *words, t_cmnd *node, int size);
 void				do_full_cmnd_array(t_input *words, t_cmnd *node, int size);
 void				do_cmnd_array_type(t_input *words, t_cmnd *node, int size);
