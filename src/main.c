@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/30 18:45:10 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/01 16:10:47 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ int	main(int argc, char **argv, char **envp)
 			free(input);
 			continue ;
 		}
+		
 		words = tokenize(words, input);
 		// creat_cmnd_list(words);
 		printf_cmnd_list(creat_cmnd_list(words));

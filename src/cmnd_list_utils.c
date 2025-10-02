@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 17:31:02 by dt                #+#    #+#             */
-/*   Updated: 2025/09/30 18:20:32 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/30 18:53:39 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,12 @@ int	count_cmnd_len(t_input *words)
 	return (i);
 }
 
-// counts how many tokens within one command skips redirs and filenames 
+// counts how many tokens within one command skips redirs and filenames
 int	count_cmnd_len_argv(t_input *words)
 {
 	t_input	*tmp;
+	int		i;
 
-	int i;
 	i = 0;
 	if (words == NULL)
 		return (0);
@@ -82,24 +82,20 @@ int	count_cmnd_len_argv(t_input *words)
 			i--;
 		tmp = tmp->next;
 	}
-	// printf("\nLength is: %d", i);
 	return (i);
 }
 
-
-
-// chage to ft_strdup(tmp->word); for right free(t_input) work
+// chage to ft_strdup(tmp->word); for right free(t_input) work ??
 // returns malloced array of one command
 void	do_cmnd_array(t_input *words, t_cmnd *node, int size)
 {
 	t_input	*tmp;
 	char	**res;
+	int		i;
 
-	int i, j; // del j
 	if (words == NULL)
 		return ;
 	i = 0;
-	j = 0; // del
 	tmp = words;
 	res = malloc(sizeof(char *) * (size + 1));
 	if (res == NULL)
@@ -108,10 +104,7 @@ void	do_cmnd_array(t_input *words, t_cmnd *node, int size)
 	{
 		if (!(tmp->type == TOKEN_RDR_IN || tmp->type == TOKEN_RDR_OUT
 				|| tmp->type == TOKEN_APPND || tmp->type == TOKEN_HERE))
-		{
 			res[i++] = tmp->word;
-			// printf("\n#%d. %s", j++, tmp->word);
-		}
 		else
 			tmp = tmp->next;
 		tmp = tmp->next;

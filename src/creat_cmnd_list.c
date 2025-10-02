@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 14:38:44 by dt                #+#    #+#             */
-/*   Updated: 2025/09/30 18:21:49 by dt               ###   ########.fr       */
+/*   Updated: 2025/09/30 19:42:17 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_input	*move_ptr_cmnd(t_input *next_cmnd)
 	return (NULL);
 }
 
-// sets node appnd/heredoc/pipe with argv_type
+//not sure if its needed
 void	set_apnd_hered_pipe(t_cmnd *node)
 {
 	int	i;
@@ -93,7 +93,7 @@ t_cmnd	*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd)
 	return (node);
 }
 
-// main func v2
+// main outter func
 t_cmnd	*creat_cmnd_list(t_input *words)
 {
 	int		cmnd_qntt;

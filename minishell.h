@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/30 18:37:38 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/02 19:15:12 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ typedef enum
 	TOKEN_RDR_OUT, // 5  // >
 	TOKEN_APPND,   // 6  // >>
 	TOKEN_HERE,    // 7  // <<
-	TOKEN_NVP      // 8  // $
+	TOKEN_NVP,     // 8  // $
+	TOKEN_COMPLEX  // 9  // "words"as'that' ==> wordsasthat
 }					token_type_t;
 
 // input tokens
@@ -69,11 +70,11 @@ typedef struct s_cmnd
 	char			**argv;
 	char			**full_argv;
 	token_type_t	**argv_type;
-	struct s_rdrs *rdrs; // new
-	bool rdr_in;         // <
-	bool rdr_out;        // >
-	bool appnd;          // >>
-	bool heredoc;        // <<
+	struct s_rdrs	*rdrs;
+	bool rdr_in;  // <
+	bool rdr_out; // >
+	bool appnd;   // >>
+	bool heredoc; // <<
 	bool			pipe;
 	struct s_cmnd	*next;
 }					t_cmnd;
@@ -114,23 +115,24 @@ int					has_unclosed_quotes(char *input);
 bool				drop_false(char *error_message);
 
 // tokenizer.c
-int					add_node(t_input **words, t_input *new_word, int tk_len);
+int					add_node(t_input **words, t_input *new_word, int res[]);
 t_input				*do_node(int start_end[], char *input);
-int					creat_tokenz(char *input, t_input **words, int tk_len);
+int					creat_tokenz(char *input, t_input **words);
 t_input				*tokenize(t_input *words, char *input);
-int					tk_len_calc_len(t_input *new_word, int tk_len);
+int					tk_len_calc_len(t_input *new_word, int res[]);
 
 // tokenizer_utils.c
-int					*tk_in_here(char *input, int res[3]);
-int					*tk_out_appnd(char *input, int res[3]);
-int					*tk_pipe(char *input, int res[3]);
-int					*tk_envp_v(char *input, int res[3]);
+int					*tk_in_here(char *input, int res[4]);
+int					*tk_out_appnd(char *input, int res[4]);
+int					*tk_pipe(char *input, int res[4]);
+int					*tk_envp_v(char *input, int res[4]);
 
 // tokenizer_utils_2.c
 int					calc_len(t_input *new_word);
-int					*tk_word(char *input, int res[3]);
-int					*tk_s_quotes(char *input, int res[3]);
-int					*tk_d_quotes(char *input, int res[3]);
+int					is_complex_wrd(int start_end[], char *input);
+int					*tk_word(char *input, int res[4]);
+int					*tk_s_quotes(char *input, int res[4]);
+int					*tk_d_quotes(char *input, int res[4]);
 
 // do_env_array.c
 char				*strjoin_modified(char const *s1, char const *s2);
@@ -141,11 +143,23 @@ int					count_list_env(t_env *env);
 void				ft_clean(t_input *words, char *input);
 size_t				ft_strlenn(const char *s);
 
-// what_command.c
-bool				is_command_buildin(char **input);
+// echo_command_implementation.c
+char				*get_env_value(char *input, t_env **env);
+void				dollar_expand(t_input *node, t_env **env);
 int					echo_command_implementation(t_cmnd **cmnd_list,
 						t_env **env);
+
+// what_command.c
+bool				is_command_buildin(char **input);
+int					which_buildin_command(t_cmnd *cmnd, t_env **my_env,
+						char **array_env);
+void				what_command(t_cmnd **cmnd_list, t_env **my_env,
+						char **array_env);
+
+// pwd_command_implementation.c
 int					pwd_command_implementation(t_env *my_env);
+
+// cd_command_implementation.c
 int					cd_command_implementation(char **input, t_env *my_env);
 
 // testing help_file.c
@@ -167,12 +181,6 @@ char				**env_list_to_envp(t_env *env);
 // env
 t_env				*env_init(char **envp);
 void				print_my_env(t_env *env);
-
-// what_command.c
-void				what_command(t_cmnd **cmnd_list, t_env **my_env,
-						char **array_env);
-int					which_buildin_command(t_cmnd *cmnd, t_env **my_env,
-						char **array_env);
 
 // Updated function declarations
 int					export_command_implementation(char **input, t_env **env,
