@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/01 16:10:47 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/03 01:12:34 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	printf_cmnd_list(t_cmnd *list)
 		while (*(tmp->argv_type))
 		{
 			printf("[%d]->", (int)**(tmp->argv_type));
-			tmp->argv_type++;	
+			tmp->argv_type++;
 		}
 		printf("NULL\n");
 		printf("Arguments list: ");
@@ -78,17 +78,16 @@ void	printf_cmnd_list(t_cmnd *list)
 // // demo main
 int	main(int argc, char **argv, char **envp)
 {
-	t_input	*words;
 	t_env	*env;
+	t_input	*words;
+	char	*tmp;
 	char	*input;
-	char	**array;
 	char	**env_array;
 
 	env = env_init(envp);
 	env_array = do_env_array(env, count_list_env(env));
 	while (42)
 	{
-		array = NULL;
 		words = NULL;
 		input = readline("\nMinishell % ");
 		if (input == NULL)
@@ -98,7 +97,7 @@ int	main(int argc, char **argv, char **envp)
 			free(input);
 			continue ;
 		}
-		
+		tmp = input; //for free(tmp);
 		words = tokenize(words, input);
 		// creat_cmnd_list(words);
 		printf_cmnd_list(creat_cmnd_list(words));

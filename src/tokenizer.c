@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:11:33 by dt                #+#    #+#             */
-/*   Updated: 2025/10/02 19:57:46 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/03 15:04:01 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,33 +93,29 @@ int	creat_tokenz(char *input, t_input **words)
 	int	res[4];
 	int	len;
 
-	if (*input == 39) // ' .
-		return (add_node(words, do_node(tk_s_quotes(input, res), input), res));
-	else if (*input == 34) // " .
-		return (add_node(words, do_node(tk_d_quotes(input, res), input), res));
-	else if (*input == 124) // |
+	if (*input == 124) // |
 		return (add_node(words, do_node(tk_pipe(input, res), input), res));
-	else if (*input == 36) // $ .
+	else if (*input == 36) // $
 		return (add_node(words, do_node(tk_envp_v(input, res), input), res));
 	else if (*input == 62) // >
 		return (add_node(words, do_node(tk_out_appnd(input, res), input), res));
 	else if (*input == 60) // <
 		return (add_node(words, do_node(tk_in_here(input, res), input), res));
-	else if (*input != 0) // words -f .
+	else //  words -f , ' or  " 
 		return (add_node(words, do_node(tk_word(input, res), input), res));
 	return (0);
 }
 
 t_input	*tokenize(t_input *words, char *input)
 {
-	while (*input != '\0')
+	while (*input)
 	{
 		if (*input != 32 && *input != 9)
 			input += creat_tokenz(input, &words);
 		else
 			input++;
 	}
-	// expand dollar
+	// expand dollar do it after words creation
 	return (words);
 }
 

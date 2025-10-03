@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/02 19:15:12 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/03 23:43:35 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,10 +129,9 @@ int					*tk_envp_v(char *input, int res[4]);
 
 // tokenizer_utils_2.c
 int					calc_len(t_input *new_word);
+int					quote_setter(char *input, int inquots);
 int					is_complex_wrd(int start_end[], char *input);
 int					*tk_word(char *input, int res[4]);
-int					*tk_s_quotes(char *input, int res[4]);
-int					*tk_d_quotes(char *input, int res[4]);
 
 // do_env_array.c
 char				*strjoin_modified(char const *s1, char const *s2);

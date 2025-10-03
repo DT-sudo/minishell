@@ -6,11 +6,16 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 00:39:29 by dt                #+#    #+#             */
-/*   Updated: 2025/10/02 21:00:56 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/03 23:43:54 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+// THE MAIN POINT IS TO DO  redo do_node func,
+// adjust every tk func res[0] then dolla expand
+// also: check if we even needed in res[0] == 0... For now I think no.
+// think about how to dollar expand if $ENV in the ""
 
 int	calc_len(t_input *new_word)
 {
@@ -21,150 +26,83 @@ int	calc_len(t_input *new_word)
 		len++;
 	return (len);
 }
-
-// if >0 is complex ==> returns how many ' / " are within one word
-int	is_complex_wrd(int start_end[], char *input)
+// cahnges value of inqouts, q_type 
+// calcs how many inquoted quots (that should be printed) in the word
+int	quote_setter(char *input, int inquots)
 {
-	int	qts;
-	int	i;
-
-	i = 0;
-	qts = 0;
-	while (i < start_end[1] - start_end[0])
+	char *q_type;
+	
+	q_type = '\0';
+	if (*input == '\'' && !inquots && q_type == '\0')
 	{
-		if (input[start_end[0] + i] == '\'' || input[start_end[0] + i] == '"')
-			qts++;
-		i++;
+		*q_type = '\'';
+		return (-1);
 	}
-	return (qts);
+	else if (*input == '"' && !inquots && q_type == '\0')
+	{
+		*q_type = '"';
+		return (-1);
+	}
+	else if (*input == '"' && inquots && q_type == '"')
+	{
+		*q_type = '\0';
+		return (1);
+	}
+	else if (*input == '\'' && inquots && q_type == '\'')
+	{
+		*q_type = '\0';
+		return (1);
+	}
+	return (-1);
 }
 
-// think about how to dollar expand if $ENV in the ""
+// if >0 is complex ==> returns how many ',
+// " outter(that shouldnt be printed) are within one word
+int	is_complex_wrd(int start_end[], char *tmp_input)
+{
+	int		q;
+
+	q = 0;
+	while (i++ < start_end[1] && tmp_input)
+	{
+		if (quote_setter(tmp_input, inquots))
+			q += 2;
+		tmp_input++;
+	}
+	return (q);
+}
+
+// NEW logic WOW!!!
+// move size for the tmp_input is + start_end[1])
+// word starts i[0] so outer quots should be remuved in do_node
+// make func that detects which quots should be del within final word.
 int	*tk_word(char *input, int res[4])
 {
-	int	inword;
-	int	i;
+	int		i;
+	int		inquots;
+	char	*tmp_input;
 
 	i = 0;
-	inword = 0;
-	while (*input != '\0' && *input != ' ' && *input != '	' && *input != '<'
-			&& *input != '>' && *input != '|')
+	res[0] = 0; //del
+	inquots = 0;
+	tmp_input = input;
+	while (tmp_input)
 	{
-		if (!inword)
-		{
-			inword = 1;
-			res[0] = i;
-		}
-		i++;
-		input++;
-	}
-	res[1] = i;
-	res[3] = is_complex_wrd(res, input);
-	if (res[3] != 0)
-		res[2] = TOKEN_COMPLEX;
-	else
-		res[2] = TOKEN_WORD;
-	return (res);
-}
-
-// THE MAIN POINT IS TO DO RIGHT START_END[] FOR THE QUOTS FUNCS!! then dolla expand
-
-// adjust for complex words:
-// check if there are any of '...'/"..."/..wrds right after the second '
-
-
-int	*tk_s_quotes(char *input, int res[4])
-{
-	int	i;
-	int	inword;
-
-	i = 0;
-	inword = 0;
-	while (*input != '\0')
-	{
-		if (*input == '\'' && !inword)
-		{
-			inword = 1;
-			res[0] = i + 1;
-			res[2] = TOKEN_SG_Q;
-		}
-		else if (*input == '\'' && inword)
-		{
-			res[1] = i;
+		inquots = quote_setter(tmp_input, inquots);
+		if (*tmp_input == ' ' || *tmp_input == '	' || *tmp_input == '>' || *tmp_input == '<'
+				|| *tmp_input == '|' && !inquots)
 			break ;
-		}
-		input++;
+		tmp_input++;
 		i++;
 	}
-	res[3] = is_complex_wrd(res, input);
-	if (res[3] != 0)
+	res[1] = --i;
+	res[3] = is_complex_wrd(res, tmp_input);
+	// "case"
+	if (input[0] == '"' && input[i] == '"' && res[3] <= 2)
+		res[2] = TOKEN_DB_Q;
+	else if (input[0] == '\'' && input[i] == '\'' && res[3] <= 2)
+		res[2] = TOKEN_SG_Q;
+!	if (res[3] )
 		res[2] = TOKEN_COMPLEX;
 	return (res);
 }
-
-int	*tk_d_quotes(char *input, int res[4])
-{
-	int	i;
-	int	inqt_s;
-	int	inword;
-
-	i = 0;
-	inword = 1;
-	while (*input != '\0' && *input != ' ' && *input != '	')
-	{
-		if (*input == '"' && !inword)
-		{
-			inword = 1;
-			res[0] = i + 1;
-			res[2] = TOKEN_DB_Q;
-		}
-		else if (*input == '"' && inword && (*(input + 1) == '\0' || *(input
-						+ 1) == '>' || *(input + 1) == '<') || *(input
-					+ 1) == ' ' || *(input + 1) == '	')
-		{
-			res[1] = i;
-			break ;
-		}
-		else if (*input == ' ' || *input == '	' || *input == '>'
-				|| *input == '<')
-			break;
-		input++;
-		i++;
-	}
-	res[3] = is_complex_wrd(res, input);
-	if (res[3] != 0)
-		res[2] = TOKEN_COMPLEX;
-	return (res);
-}
-
-// adjust for complex words:
-// think about how to dollar expand if $ENV in the ""
-// check if there are any of '...'/"..."/..wrds right after the second "
-// int	*tk_d_quotes(char *input, int res[4])
-// {
-// 	int	i;
-// 	int	inword;
-
-// 	i = 0;
-// 	inword = 0;
-// 	while (*input != '\0')
-// 	{
-// 		if (*input == '"' && !inword)
-// 		{
-// 			inword = 1;
-// 			res[0] = i + 1;
-// 			res[2] = TOKEN_DB_Q;
-// 		}
-// 		else if (*input == '"' && inword)
-// 		{
-// 			res[1] = i; //..
-// 			break ;
-// 		}
-// 		input++;
-// 		i++;
-// 	}
-// 	res[3] = is_complex_wrd(res, input);
-// 	if (res[3] != 0)
-// 		res[2] = TOKEN_COMPLEX;
-// 	return (res);
-// }
