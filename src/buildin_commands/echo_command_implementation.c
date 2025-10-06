@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 23:26:59 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/30 20:08:03 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/06 21:56:42 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,33 +25,6 @@ char	*get_env_value(char *input, t_env **env)
 	}
 	return (NULL);
 }
-
-int echo_command_implementation(t_cmnd **cmnd_list, t_env **env)
-{
-    int	i;
-    int y;
-	int	n_FLAG;
-    
-	n_FLAG = 0;
-	i = 1;
-    y = 1;
-	if ((*cmnd_list)->argv[i] && ft_strncmp((*cmnd_list)->argv[1], "-n", 3) == 0)
-	{
-		n_FLAG = 1;
-        y = 2;
-	}
-    while ((*cmnd_list)->argv[y] != NULL)
-    {
-        printf("%s", (*cmnd_list)->argv[y]);
-        if ((*cmnd_list)->argv[y + 1])
-            printf(" ");
-        y++;
-    }
-    if (n_FLAG == 0)
-        printf("\n");
-    return (0);
-}
-
 
 // char	**dollar_expand(char **input, t_env **env)
 // {
@@ -90,3 +63,29 @@ int echo_command_implementation(t_cmnd **cmnd_list, t_env **env)
 // 	}
 // 	return (input);
 // }
+
+int echo_command_implementation(t_cmnd **cmnd_list, t_env **env)
+{
+    int	i;
+    int y;
+	int	n_FLAG;
+    
+	n_FLAG = 0;
+	i = 1;
+    y = 1;
+	if ((*cmnd_list)->argv[i] && ft_strncmp((*cmnd_list)->argv[1], "-n", 3) == 0)
+	{
+		n_FLAG = 1;
+        y = 2;
+	}
+    while ((*cmnd_list)->argv[y] != NULL)
+    {
+        printf("%s", (*cmnd_list)->argv[y]);
+        if ((*cmnd_list)->argv[y + 1])
+            printf(" ");
+        y++;
+    }
+    if (n_FLAG == 0)
+        printf("\n");
+    return (0);
+}

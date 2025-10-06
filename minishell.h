@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/03 23:43:35 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/06 21:52:37 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ typedef enum
 	TOKEN_RDR_OUT, // 5  // >
 	TOKEN_APPND,   // 6  // >>
 	TOKEN_HERE,    // 7  // <<
-	TOKEN_NVP,     // 8  // $
 	TOKEN_COMPLEX  // 9  // "words"as'that' ==> wordsasthat
 }					token_type_t;
 
@@ -78,6 +77,20 @@ typedef struct s_cmnd
 	bool			pipe;
 	struct s_cmnd	*next;
 }					t_cmnd;
+
+typedef struct s_quote_state
+{
+	char			type;
+	int				inquotes;
+	int				to_kill;
+}					t_quote_state;
+
+typedef struct s_len_type_qts
+{
+	int				len;
+	int				type;
+	int				qts;
+}					t_len_type_qts;
 
 // envar var
 typedef struct s_env
@@ -115,23 +128,24 @@ int					has_unclosed_quotes(char *input);
 bool				drop_false(char *error_message);
 
 // tokenizer.c
-int					add_node(t_input **words, t_input *new_word, int res[]);
-t_input				*do_node(int start_end[], char *input);
-int					creat_tokenz(char *input, t_input **words);
+t_quote_state		detec_inquotes(char cr);
+t_input				*do_node(t_len_type_qts *ltq, char *input);
 t_input				*tokenize(t_input *words, char *input);
-int					tk_len_calc_len(t_input *new_word, int res[]);
+int					creat_tokenz(char *input, t_input **words);
+void				add_node(t_input **words, t_input *new_word,
+						t_len_type_qts *ltq);
 
 // tokenizer_utils.c
-int					*tk_in_here(char *input, int res[4]);
-int					*tk_out_appnd(char *input, int res[4]);
-int					*tk_pipe(char *input, int res[4]);
-int					*tk_envp_v(char *input, int res[4]);
+t_len_type_qts		*tk_in_here(char *input, t_len_type_qts *ltq);
+t_len_type_qts		*tk_out_appnd(char *input, t_len_type_qts *ltq);
+t_len_type_qts		*tk_pipe(char *input, t_len_type_qts *ltq);
 
 // tokenizer_utils_2.c
+t_len_type_qts		*tk_word(char *input, t_len_type_qts *ltq);
 int					calc_len(t_input *new_word);
-int					quote_setter(char *input, int inquots);
-int					is_complex_wrd(int start_end[], char *input);
-int					*tk_word(char *input, int res[4]);
+int					quote_setter(char cr, int inquots);
+int					is_complex_wrd(t_len_type_qts *ltq, char *input,
+						int inquots);
 
 // do_env_array.c
 char				*strjoin_modified(char const *s1, char const *s2);
