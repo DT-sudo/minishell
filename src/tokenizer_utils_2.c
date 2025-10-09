@@ -6,15 +6,11 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 00:39:29 by dt                #+#    #+#             */
-/*   Updated: 2025/10/06 21:56:13 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/09 19:55:20 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-// THE MAIN POINT IS TO DO  redo do_node func,
-// redo tk_len_calc_len
-// do dolla expand (think about how to dollar expand if $ENV in the "")
 
 int	calc_len(t_input *new_word)
 {
@@ -25,77 +21,78 @@ int	calc_len(t_input *new_word)
 		len++;
 	return (len);
 }
-// creat similar version for do_node quot skipping
 
-// cahnges value of inqouts, q_type
-// calcs how many inquoted quots (that should be printed) in the word
-
-int	quote_setter(char cr, int inquots)
+// if > 0 is complex ==> returns how many ', "
+// outter(that shouldnt be printed) are within one word
+int	is_complex_wrd(t_len_type_qts *ltq, char *input)
 {
-	static t_quote_state	chr = {0, 0, 0};
-	
+	int				i;
+	int				q;
+	t_quote_state	*state;
+
+	i = 0;
+	q = 0;
+	while (i < ltq->len && input[i])
+	{
+		state = dtct_inquotes(input[i++]);
+		if (state->new_pair)
+			q += 2;
+	}
+	reset_state_sttc(state);
+	return (q);
+}
+
+// calcs how many quots that shouldn't be printed in the token
+t_quote_state	*dtct_inquotes(char cr)
+{
+	static t_quote_state	chr = {0, 0, 0, 0};
+
+	if (cr == '\0')
+		chr = (t_quote_state){0, 0, 0, 0};
+	if (chr.new_pair)
+		chr.new_pair = 0;
 	if ((cr == '\'' || cr == '"'))
 	{
 		if (!chr.inquotes)
 		{
-			chr.to_kill = 0;
-			chr.inquotes = 1;
 			chr.type = cr;
-			return (1);
+			chr.closed = 0;
+			chr.inquotes = 1;
+			chr.new_pair = 1;
 		}
 		else if (cr == chr.type)
 		{
-			chr.to_kill = 1;
-			chr.inquotes = 0;
 			chr.type = 0;
+			chr.closed = 1;
+			chr.inquotes = 0;
 		}
 	}
-	return (0);
+	else if (chr.closed)
+		chr.closed = 0;
+	return (&chr);
 }
-// if >0 is complex ==> returns how many ',
-// " outter(that shouldnt be printed) are within one word
-int	is_complex_wrd(t_len_type_qts *ltq, char *input, int inquots)
+
+t_len_type_qts	*tk_word(char *input, t_len_type_qts *ltq)
 {
-	int i;
-	int	q;
-	
-	i = 0;
-	q = 0;
-	while (i++ < ltq->len && input)
+	t_quote_state	*state;
+	char			*rst_input;
+
+	rst_input = input;
+	while (*input)
 	{
-		if (quote_setter(*input, inquots))
-			q += 2;
+		state = dtct_inquotes(*input);
+		if ((*input == ' ' || *input == '\t' || *input == '>' || *input == '<'
+				|| *input == '|') && !state->inquotes)
+			break ;
+		ltq->len++;
 		input++;
 	}
-	return (q);
-}
-
-// NEW logic WOW!!!
-t_len_type_qts	*tk_word(char *input,  t_len_type_qts *ltq)
-{
-	int		i;
-	int		inquots;
-	char	*tmp_input;
-
-	i = 0;
-	inquots = 0;
-	tmp_input = input;
-	while (*tmp_input)
-	{
-		inquots = quote_setter(*tmp_input, inquots);
-		if (*tmp_input == ' ' || *tmp_input == '	' || *tmp_input == '>'
-				|| *tmp_input == '<' || *tmp_input == '|' && !inquots)
-			break ;
-		i++;	
-		tmp_input++;
-	}
-	ltq->len = --i;
-	ltq->qts = is_complex_wrd(ltq, tmp_input, inquots);
-	if (input[0] == '"' && input[i] == '"' && ltq->qts <= 2)
-		ltq->type = TOKEN_DB_Q;
-	else if (input[0] == '\'' && input[i] == '\'' && ltq->qts <= 2)
-		ltq->type = TOKEN_SG_Q;
+	input = rst_input;
+	reset_state_sttc(state);
+	ltq->qts = is_complex_wrd(ltq, input);
 	if (ltq->qts)
 		ltq->type = TOKEN_COMPLEX;
+	else
+		ltq->type = TOKEN_WORD;
 	return (ltq);
 }

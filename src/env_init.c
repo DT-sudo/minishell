@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 18:50:50 by olcherno          #+#    #+#             */
-/*   Updated: 2025/08/31 17:24:57 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/09 18:45:44 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ t_env	*env_init(char **envp)
 		if (!new_node)
 			exit(1);
 		new_node->next = NULL;
-		equals_pos = strchr(envp[i], '=');
+		equals_pos = ft_strchr(envp[i], '='); // !!!
 		if (equals_pos)
 		{
 			*equals_pos = '\0';

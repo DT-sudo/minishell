@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/06 21:52:37 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/08 21:58:04 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,30 +38,13 @@ extern int			exit_status;
 typedef enum
 {
 	TOKEN_WORD,    // 0 // word: comands, flags
-	TOKEN_SG_Q,    // 1  // ''
-	TOKEN_DB_Q,    // 2  // ""
-	TOKEN_PIPE,    // 3  // |
-	TOKEN_RDR_IN,  // 4  // <
-	TOKEN_RDR_OUT, // 5  // >
-	TOKEN_APPND,   // 6  // >>
-	TOKEN_HERE,    // 7  // <<
-	TOKEN_COMPLEX  // 9  // "words"as'that' ==> wordsasthat
+	TOKEN_PIPE,    // 1  // |
+	TOKEN_RDR_IN,  // 2  // <
+	TOKEN_RDR_OUT, // 3  // >
+	TOKEN_APPND,   // 4  // >>
+	TOKEN_HERE,    // 5  // <<
+	TOKEN_COMPLEX  // 6  // "words"as'that'
 }					token_type_t;
-
-// input tokens
-typedef struct s_input
-{
-	token_type_t	type;
-	char			*word;
-	struct s_input	*next;
-}					t_input;
-
-typedef struct s_rdrs
-{
-	token_type_t	redir_type;
-	char			*filename;
-	struct s_rdrs	*next;
-}					t_rdrs;
 
 // cmnds structure
 typedef struct s_cmnd
@@ -78,13 +61,39 @@ typedef struct s_cmnd
 	struct s_cmnd	*next;
 }					t_cmnd;
 
+// input tokens
+typedef struct s_input
+{
+	token_type_t	type;
+	char			*word;
+	struct s_input	*next;
+}					t_input;
+
+// redirs linked list
+typedef struct s_rdrs
+{
+	token_type_t	redir_type;
+	char			*filename;
+	struct s_rdrs	*next;
+}					t_rdrs;
+
 typedef struct s_quote_state
 {
 	char			type;
 	int				inquotes;
-	int				to_kill;
+	int				closed;
+	int				new_pair;
 }					t_quote_state;
 
+typedef struct s_xtnd
+{
+	int				len_dif;
+	int				og_len;
+	char			*new;
+	struct s_xtnd	*next;
+}					t_xtnd;
+
+// length type and quote type for every token
 typedef struct s_len_type_qts
 {
 	int				len;
@@ -97,6 +106,7 @@ typedef struct s_env
 {
 	char			*key;
 	char			*value;
+	int				new_len;
 	struct s_env	*next;
 }					t_env;
 
@@ -104,7 +114,7 @@ typedef struct s_env
 t_input				*move_ptr_cmnd(t_input *next_cmnd);
 void				set_apnd_hered_pipe(t_cmnd *node);
 t_cmnd				*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd);
-t_cmnd				*creat_cmnd_list(t_input *words);
+t_cmnd				*creat_cmnd_ls(t_input *words);
 
 // cmnd_list_utils.c
 void				set_to_zero(t_cmnd *cmnd_node);
@@ -128,12 +138,10 @@ int					has_unclosed_quotes(char *input);
 bool				drop_false(char *error_message);
 
 // tokenizer.c
-t_quote_state		detec_inquotes(char cr);
 t_input				*do_node(t_len_type_qts *ltq, char *input);
 t_input				*tokenize(t_input *words, char *input);
 int					creat_tokenz(char *input, t_input **words);
-void				add_node(t_input **words, t_input *new_word,
-						t_len_type_qts *ltq);
+void				add_node(t_input **words, t_input *new_word);
 
 // tokenizer_utils.c
 t_len_type_qts		*tk_in_here(char *input, t_len_type_qts *ltq);
@@ -143,30 +151,38 @@ t_len_type_qts		*tk_pipe(char *input, t_len_type_qts *ltq);
 // tokenizer_utils_2.c
 t_len_type_qts		*tk_word(char *input, t_len_type_qts *ltq);
 int					calc_len(t_input *new_word);
-int					quote_setter(char cr, int inquots);
-int					is_complex_wrd(t_len_type_qts *ltq, char *input,
-						int inquots);
+t_quote_state		*dtct_inquotes(char cr);
+int					is_complex_wrd(t_len_type_qts *ltq, char *input);
 
 // do_env_array.c
 char				*strjoin_modified(char const *s1, char const *s2);
 char				**do_env_array(t_env *env, int size);
-int					count_list_env(t_env *env);
+int					count_env_ls(t_env *env);
 
 // utils.c
 void				ft_clean(t_input *words, char *input);
 size_t				ft_strlenn(const char *s);
 
+// dollar_list.c
+
+void				reset_state_sttc(t_quote_state *state);
+int					env_cmp(const char *key, const char *input);
+t_xtnd				*xtnd_env(char *input, t_env **env);
+int					calc_og(char *input);
+void				connect_nodes(t_xtnd *node, t_xtnd *head);
+t_xtnd				*crt_xtnd_ls(char *input, t_env **env);
+int					calc_len_dif(t_xtnd *head);
+void				put_value(char *new_input, t_xtnd *ls, int n);
+char				*dollar_extend(char *input, t_env **env);
+
 // echo_command_implementation.c
-char				*get_env_value(char *input, t_env **env);
-void				dollar_expand(t_input *node, t_env **env);
-int					echo_command_implementation(t_cmnd **cmnd_list,
-						t_env **env);
+int					echo_command_implementation(t_cmnd **cmnd_ls, t_env **env);
 
 // what_command.c
 bool				is_command_buildin(char **input);
 int					which_buildin_command(t_cmnd *cmnd, t_env **my_env,
 						char **array_env);
-void				what_command(t_cmnd **cmnd_list, t_env **my_env,
+void				what_command(t_cmnd **cmnd_ls, t_env **my_env,
 						char **array_env);
 
 // pwd_command_implementation.c

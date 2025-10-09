@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtereshc <dtereshc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:11:33 by dt                #+#    #+#             */
-/*   Updated: 2025/09/11 16:56:54 by dtereshc         ###   ########.fr       */
+/*   Updated: 2025/10/09 18:45:58 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// clean stack func needed 
-void ft_clean(t_input *words, char *input)
+// clean stack func needed
+void	ft_clean(t_input *words, char *input)
 {
 	if (input)
 		free(input);

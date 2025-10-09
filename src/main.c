@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/06 21:47:46 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/09 18:47:21 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	print_og_env(char **envp)
 }
 
 // test func: del later.
-void	printf_cmnd_list(t_cmnd *list)
+void	printf_cmnd_ls(t_cmnd *list)
 {
 	t_cmnd	*tmp;
 
@@ -75,6 +75,30 @@ void	printf_cmnd_list(t_cmnd *list)
 	}
 }
 
+void	printf_t_input(t_input *list)
+{
+	t_input *tmp;
+	
+	tmp = list;
+	if (!list)
+		exit(1);
+	printf("Input tokenized:\n");
+	while(list != NULL)
+	{
+		printf("[%s]-", list->word);
+		list = list->next;
+	}
+	printf("NULL\n\n");
+	list = tmp;
+	printf("Input types:\n");
+	while(list != NULL)
+	{
+		printf("[%d]-", (int)list->type);
+		list = list->next;
+	}
+	printf("NULL\n");
+}
+
 // // demo main
 int	main(int argc, char **argv, char **envp)
 {
@@ -85,7 +109,7 @@ int	main(int argc, char **argv, char **envp)
 	char	**env_array;
 
 	env = env_init(envp);
-	env_array = do_env_array(env, count_list_env(env));
+	env_array = do_env_array(env, count_env_ls(env));
 	while (42)
 	{
 		words = NULL;
@@ -97,11 +121,18 @@ int	main(int argc, char **argv, char **envp)
 			free(input);
 			continue ;
 		}
-		// words = tokenize(words, (dollar_expand(input), &env));
-		// creat_cmnd_list(words);
-		printf_cmnd_list(creat_cmnd_list(words));
-		// what_command(creat_cmnd_list(words), &env, env_array);
 		tmp = input; //for free(tmp);
+		words = tokenize(words, input);
+		printf_t_input(words);
+		// words = tokenize(words, dollar_extend(input, &env));
+		// creat_cmnd_ls(words);
+		// printf_cmnd_ls(creat_cmnd_ls(words));
+		// what_command(creat_cmnd_ls(words), &env, env_array);
+		// free(tmp);
+		// while()
+		// {
+			
+		// }
 	}
 	return (0);
 }

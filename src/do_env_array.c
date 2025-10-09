@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   do_env_array.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtereshc <dtereshc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 14:43:27 by dt                #+#    #+#             */
-/*   Updated: 2025/09/16 12:52:31 by dtereshc         ###   ########.fr       */
+/*   Updated: 2025/10/07 23:38:37 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	**do_env_array(t_env *env, int size)
 	return (res);
 }
 
-int	count_list_env(t_env *env)
+int	count_env_ls(t_env *env)
 {
 	int		i;
 	t_env	*tmp;

@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/09/30 18:39:12 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/07 23:36:43 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@ int	which_buildin_command(t_cmnd *cmnd, t_env **my_env, char **array_env)
 	return (0); // ?...
 }
 
-void	what_command(t_cmnd **cmnd_list, t_env **my_env, char **array_env)
+void	what_command(t_cmnd **cmnd_ls, t_env **my_env, char **array_env)
 {
 	t_cmnd	*cmnd;
 
-	cmnd = *cmnd_list;
+	cmnd = *cmnd_ls;
 	while (cmnd != NULL)
 	{
 		if (is_command_buildin(cmnd->argv))

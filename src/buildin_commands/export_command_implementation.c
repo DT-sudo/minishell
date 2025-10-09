@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_command_implementation.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtereshc <dtereshc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 23:50:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/11 16:41:34 by dtereshc         ###   ########.fr       */
+/*   Updated: 2025/10/07 23:38:50 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	only_export(char **input, t_env *env)
 		return (0);
 	}
 	tmp = env;
-	size = count_list_env(env);
+	size = count_env_ls(env);
 	if (size == 0)
 		return (0);
 	array = malloc(sizeof(char *) * (size + 1));

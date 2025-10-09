@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 14:39:52 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/21 20:01:11 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/07 13:59:36 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,19 +55,7 @@
 // 	return (i);
 // }
 
-char	*ft_strchr(const char *s, int c)
-{
-	unsigned int	i;
 
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == (char)c)
-			return ((char *)(s + i));
-		i++;
-	}
-	return (NULL);
-}
 
 char	*ft_strncpy(char *dest, char *src, unsigned int n)
 {

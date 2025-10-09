@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 14:38:44 by dt                #+#    #+#             */
-/*   Updated: 2025/09/30 19:42:17 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/09 18:45:39 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ t_cmnd	*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd)
 }
 
 // main outter func
-t_cmnd	*creat_cmnd_list(t_input *words)
+t_cmnd	*creat_cmnd_ls(t_input *words)
 {
 	int		cmnd_qntt;
 	t_cmnd	*cmnd_node;
