@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/09 18:47:21 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/13 19:57:23 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	printf_t_input(t_input *list)
 	tmp = list;
 	if (!list)
 		exit(1);
-	printf("Input tokenized:\n");
+	printf("\nInput tokenized:\n");
 	while(list != NULL)
 	{
 		printf("[%s]-", list->word);
@@ -99,6 +99,18 @@ void	printf_t_input(t_input *list)
 	printf("NULL\n");
 }
 
+void print_extened_input(char *s)
+{
+	if (!s)
+		exit(1);
+	printf("\nExtended input:\n");
+	while(*s)
+	{
+		printf("[%c]-", *s);
+		s++;
+	}
+	printf("\n");
+}
 // // demo main
 int	main(int argc, char **argv, char **envp)
 {
@@ -121,9 +133,21 @@ int	main(int argc, char **argv, char **envp)
 			free(input);
 			continue ;
 		}
-		tmp = input; //for free(tmp);
+		tmp = input; //for free(tmp);  del
 		words = tokenize(words, input);
-		printf_t_input(words);
+		printf_t_input(words);// del
+		
+		printf("\n///////////Extendet dolla part///////////\n\n");// del
+		
+		words = NULL;// del
+		input = tmp;// del
+		input = dollar_extend(input, &env); //func working on now.
+		
+		print_extened_input(input); // del
+
+		words = tokenize(words, input); //creates input token linked list 
+		
+		printf_t_input(words);// del
 		// words = tokenize(words, dollar_extend(input, &env));
 		// creat_cmnd_ls(words);
 		// printf_cmnd_ls(creat_cmnd_ls(words));

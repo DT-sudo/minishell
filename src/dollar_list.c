@@ -12,13 +12,10 @@
 
 #include "../minishell.h"
 
-
-
-/// exit error!!!! 
 void	reset_state_sttc(t_quote_state *state)
 {
 	if (!state)
-		return;
+		return ;
 	state->closed = 0;
 	state->inquotes = 0;
 	state->new_pair = 0;
@@ -47,34 +44,6 @@ int	env_cmp(const char *key, const char *input)
 	return (0);
 }
 
-// creats t_xtnd node
-t_xtnd	*xtnd_env(char *input, t_env **env)
-{
-	t_env	*current;
-	t_xtnd	*node;
-
-	current = *env;
-	node = malloc(sizeof(t_xtnd));
-	if (!node)
-		exit(1);
-	node->new = NULL;
-	node->next = NULL;
-	node->og_len = 0;
-	node->len_dif = 0;
-	while (current)
-	{
-		if (env_cmp(current->key, input))
-		{
-			node->og_len = (int)ft_strlen(current->key);
-			node->new = ft_strdup(current->value);
-			node->len_dif = (int)ft_strlen(node->new) - node->og_len - 1;
-			return (node);
-		}
-		current = current->next;
-	}
-	return (node);
-}
-
 // calcs lenght of OG $ENV accurance within original input
 int	calc_og(char *input)
 {
@@ -96,21 +65,49 @@ int	calc_og(char *input)
 }
 
 // connects nodes of t_xtnd linked ls
-void	connect_nodes(t_xtnd *node, t_xtnd *head)
+void	connect_nodes(t_xtnd **head, t_xtnd *node)
 {
-	t_xtnd	*tmp;
+	t_xtnd *tmp;
 
-	tmp = head;
-	if (!head || !node)
-		exit(1);
+	tmp = *head;
+	if (!node)
+		exit(22);
 	if (head == NULL)
-		head = node;
+		*head = node;
 	else
 	{
 		while (tmp->next != NULL)
 			tmp = tmp->next;
 		tmp->next = node;
 	}
+}
+
+// creats t_xtnd node
+t_xtnd	*xtnd_env(char *input, t_env **env)
+{
+	t_xtnd	*node;
+	t_env	*current;
+
+	current = *env;
+	node = malloc(sizeof(t_xtnd));
+	if (!node)
+		exit(2);
+	node->new = NULL;
+	node->next = NULL;
+	node->og_len = 0;
+	node->len_dif = 0;
+	while (current)
+	{
+		if (env_cmp(current->key, input))
+		{
+			node->og_len = (int)ft_strlen(current->key);
+			node->new = ft_strdup(current->value);
+			node->len_dif = (int)ft_strlen(node->new) - node->og_len - 1;
+			return (node);
+		}
+		current = current->next;
+	}
+	return (node);
 }
 
 // creats t_xtnd linked ls with data for $ENV extention
@@ -121,21 +118,28 @@ t_xtnd	*crt_xtnd_ls(char *input, t_env **env)
 	t_xtnd			*head;
 
 	head = NULL;
+	if (!input || !env)
+		return (NULL);
 	while (*input)
 	{
 		state = dtct_inquotes(*input);
+		if (!state)
+			exit(40);
 		if (*input == '$' && *(input + 1) != '\0' && (state->type == '"'
 				|| state->type == 0))
 		{
 			xtnd_node = xtnd_env(input + 1, env);
+			if (!xtnd_node)
+				exit(41);
 			if (!xtnd_node->new)
 			{
+				// write(1, "problemus?)", 11); //del
 				xtnd_node->new = ft_strdup("");
 				xtnd_node->og_len = calc_og(input);
 				xtnd_node->len_dif = (int)ft_strlen(xtnd_node->new)
 					- xtnd_node->og_len;
 			}
-			connect_nodes(xtnd_node, head);
+			connect_nodes(&head, xtnd_node);
 		}
 		input++;
 	}
@@ -150,8 +154,8 @@ int	calc_len_dif(t_xtnd *head)
 	int		len_dif;
 
 	len_dif = 0;
-	if (!head)
-		exit(1);
+	// if (!head) --> exit
+	// 	exit(33);
 	tmp = head;
 	while (tmp != NULL)
 	{
@@ -167,7 +171,7 @@ void	put_value(char *new_input, t_xtnd *ls, int n)
 
 	x = 0;
 	if (!new_input || !ls)
-		exit(1);
+		exit(9);
 	while (ls->new[x])
 	{
 		new_input[n + x] = ls->new[x];
@@ -180,17 +184,22 @@ char	*dollar_extend(char *input, t_env **env)
 	t_quote_state	*state;
 	t_xtnd			*xtnds;
 	char			*new_input;
-	int				i;
 	int				n;
+	int				i;
 
 	if (!input || !env)
 		return (NULL);
 	n = 0;
 	i = 0;
 	xtnds = crt_xtnd_ls(input, env);
+	if (!xtnds)
+	{
+		write(1, "xtnds==NULL\n", 13); // error here
+		return (ft_strdup(input));
+	}
 	new_input = malloc(sizeof(char) * ((int)ft_strlen(input)
 				+ calc_len_dif(xtnds) + 1));
-	if (!xtnds || !new_input)
+	if (!new_input)
 		return (ft_strdup(input));
 	while (input[i])
 	{

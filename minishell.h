@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/08 21:58:04 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/11 15:27:16 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ void				reset_state_sttc(t_quote_state *state);
 int					env_cmp(const char *key, const char *input);
 t_xtnd				*xtnd_env(char *input, t_env **env);
 int					calc_og(char *input);
-void				connect_nodes(t_xtnd *node, t_xtnd *head);
+void				connect_nodes(t_xtnd **head, t_xtnd *node);
 t_xtnd				*crt_xtnd_ls(char *input, t_env **env);
 int					calc_len_dif(t_xtnd *head);
 void				put_value(char *new_input, t_xtnd *ls, int n);
