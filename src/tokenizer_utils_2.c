@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 00:39:29 by dt                #+#    #+#             */
-/*   Updated: 2025/10/09 19:55:20 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/15 14:40:11 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ int	is_complex_wrd(t_len_type_qts *ltq, char *input)
 }
 
 // calcs how many quots that shouldn't be printed in the token
+// marks if the pointer is within quotes or out of them 
 t_quote_state	*dtct_inquotes(char cr)
 {
 	static t_quote_state	chr = {0, 0, 0, 0};

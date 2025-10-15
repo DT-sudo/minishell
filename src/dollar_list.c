@@ -22,44 +22,21 @@ void	reset_state_sttc(t_quote_state *state)
 	state->type = '\0';
 }
 
-// finds out if $ENV has value
-int	env_cmp(const char *key, const char *input)
-{
-	const char	*tmp_key;
-	const char	*tmp_input;
-
-	tmp_key = key;
-	tmp_input = input;
-	while (*tmp_key && (*tmp_key == *tmp_input))
-	{
-		tmp_key++;
-		tmp_input++;
-	}
-	if (!(*tmp_input >= 48 && *tmp_input <= 57 || *tmp_input >= 65
-			&& *tmp_input <= 90 || *tmp_input >= 97 && *tmp_input <= 122
-			|| *tmp_input == 95) && *tmp_key == '\0')
-		return (1);
-	else if (*tmp_key == '\0' && *tmp_input == '\0')
-		return (1);
-	return (0);
-}
-
+//ok
 // calcs lenght of OG $ENV accurance within original input
 int	calc_og(char *input)
 {
-	char	*tmp_input;
 	int		i;
 
-	i = 0;
-	tmp_input = input;
-	while (*tmp_input)
+	i = 1;
+	while (*input)
 	{
-		tmp_input++;
-		i++;
-		if (!(*tmp_input >= 48 && *tmp_input <= 57 || *tmp_input >= 65
-				&& *tmp_input <= 90 || *tmp_input >= 97 && *tmp_input <= 122
-				|| *tmp_input == 95))
+		if (!(*input >= 48 && *input <= 57 || *input >= 65
+				&& *input <= 90 || *input >= 97 && *input <= 122
+				|| *input == 95))
 			break ;
+		input++;
+		i++;
 	}
 	return (i);
 }
@@ -70,16 +47,35 @@ void	connect_nodes(t_xtnd **head, t_xtnd *node)
 	t_xtnd *tmp;
 
 	tmp = *head;
-	if (!node)
+	if (!node || !head)
 		exit(22);
-	if (head == NULL)
-		*head = node;
-	else
+	if (*head == NULL)
 	{
-		while (tmp->next != NULL)
-			tmp = tmp->next;
-		tmp->next = node;
+		*head = node;
+		return;
 	}
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+	tmp->next = node;
+}
+
+//ok
+// finds out if $ENV has value
+int	env_cmp(const char *key, const char *input)
+{
+	while (*key && (*key == *input))
+	{
+		key++;
+		input++;
+	}
+	//case when $ENV is dellimited with some other chars except sp/tab 
+	if (!(*input >= 48 && *input <= 57 || *input >= 65
+			&& *input <= 90 || *input >= 97 && *input <= 122
+			|| *input == 95) && *key == '\0')
+		return (1);
+	else if (*key == '\0' && *input == '\0')
+		return (1);
+	return (0);
 }
 
 // creats t_xtnd node
@@ -100,9 +96,9 @@ t_xtnd	*xtnd_env(char *input, t_env **env)
 	{
 		if (env_cmp(current->key, input))
 		{
-			node->og_len = (int)ft_strlen(current->key);
+			node->og_len = ft_strlen(current->key) + 1; //
 			node->new = ft_strdup(current->value);
-			node->len_dif = (int)ft_strlen(node->new) - node->og_len - 1;
+			node->len_dif = ft_strlen(node->new) - node->og_len; // 
 			return (node);
 		}
 		current = current->next;
@@ -110,42 +106,6 @@ t_xtnd	*xtnd_env(char *input, t_env **env)
 	return (node);
 }
 
-// creats t_xtnd linked ls with data for $ENV extention
-t_xtnd	*crt_xtnd_ls(char *input, t_env **env)
-{
-	t_quote_state	*state;
-	t_xtnd			*xtnd_node;
-	t_xtnd			*head;
-
-	head = NULL;
-	if (!input || !env)
-		return (NULL);
-	while (*input)
-	{
-		state = dtct_inquotes(*input);
-		if (!state)
-			exit(40);
-		if (*input == '$' && *(input + 1) != '\0' && (state->type == '"'
-				|| state->type == 0))
-		{
-			xtnd_node = xtnd_env(input + 1, env);
-			if (!xtnd_node)
-				exit(41);
-			if (!xtnd_node->new)
-			{
-				// write(1, "problemus?)", 11); //del
-				xtnd_node->new = ft_strdup("");
-				xtnd_node->og_len = calc_og(input);
-				xtnd_node->len_dif = (int)ft_strlen(xtnd_node->new)
-					- xtnd_node->og_len;
-			}
-			connect_nodes(&head, xtnd_node);
-		}
-		input++;
-	}
-	reset_state_sttc(state);
-	return (head);
-}
 
 // calcs length to add to OG_input lenght for extented *new_input
 int	calc_len_dif(t_xtnd *head)
@@ -179,6 +139,44 @@ void	put_value(char *new_input, t_xtnd *ls, int n)
 	}
 }
 
+// problem is here for now
+// creats t_xtnd linked ls with data for $ENV extention
+t_xtnd	*crt_xtnd_ls(char *input, t_env **env)
+{
+	t_quote_state	*state;
+	t_xtnd			*xtnd_node;
+	t_xtnd			*head;
+
+	head = NULL;
+	if (!input || !env)
+		return (NULL);
+	while (*input)
+	{
+		state = dtct_inquotes(*input);
+		if (!state)
+			exit(40);
+		if (*input == '$' && *(input + 1) != '\0' && (state->type == '"'
+				|| state->type == 0))
+		{
+			xtnd_node = xtnd_env(input + 1, env);
+			if (!xtnd_node)
+				exit(41);
+			if (!xtnd_node->new)
+			{
+				// write(1, "problemus?)", 11); //del
+				xtnd_node->new = ft_strdup("");
+				xtnd_node->og_len = calc_og(input);
+				xtnd_node->len_dif = ft_strlen(xtnd_node->new)
+					- xtnd_node->og_len;
+			}
+			connect_nodes(&head, xtnd_node);
+		}
+		input++;
+	}
+	reset_state_sttc(state);
+	return (head);
+}
+
 char	*dollar_extend(char *input, t_env **env)
 {
 	t_quote_state	*state;
@@ -194,10 +192,10 @@ char	*dollar_extend(char *input, t_env **env)
 	xtnds = crt_xtnd_ls(input, env);
 	if (!xtnds)
 	{
-		write(1, "xtnds==NULL\n", 13); // error here
+		write(1, "xtnds==NULL\n", 13); // err here
 		return (ft_strdup(input));
 	}
-	new_input = malloc(sizeof(char) * ((int)ft_strlen(input)
+	new_input = malloc(sizeof(char) * (ft_strlen(input)
 				+ calc_len_dif(xtnds) + 1));
 	if (!new_input)
 		return (ft_strdup(input));
@@ -205,10 +203,10 @@ char	*dollar_extend(char *input, t_env **env)
 	{
 		state = dtct_inquotes(input[i]);
 		if (input[i] == '$' && input[i + 1] && (state->type == '"'
-				|| state->type == 0) && xtnds)
+				|| state->type == 0))
 		{
 			put_value(new_input, xtnds, n);
-			n += (int)ft_strlen(xtnds->new);
+			n += ft_strlen(xtnds->new);
 			i += xtnds->og_len;
 			xtnds = xtnds->next;
 		}
