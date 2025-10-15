@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/11 15:27:16 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/15 20:14:51 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,14 @@ typedef enum
 // cmnds structure
 typedef struct s_cmnd
 {
-	char			**argv;
-	char			**full_argv;
-	token_type_t	**argv_type;
-	struct s_rdrs	*rdrs;
-	bool rdr_in;  // <
-	bool rdr_out; // >
-	bool appnd;   // >>
-	bool heredoc; // <<
+	char **argv;              // actuall argv[] that excve would work with
+	char **full_argv;         // every argv for 1 command node
+	token_type_t **argv_type; //  every argv type for 1 command node
+	struct s_rdrs *rdrs;      // linked list of redirs for every command node
+	bool rdr_in;              // <
+	bool rdr_out;             // >
+	bool appnd;               // >>
+	bool heredoc;             // <<
 	bool			pipe;
 	struct s_cmnd	*next;
 }					t_cmnd;
@@ -113,6 +113,7 @@ typedef struct s_env
 // creat_cmnd_list.c
 t_input				*move_ptr_cmnd(t_input *next_cmnd);
 void				set_apnd_hered_pipe(t_cmnd *node);
+void				do_rdrs(t_cmnd *node);
 t_cmnd				*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd);
 t_cmnd				*creat_cmnd_ls(t_input *words);
 
@@ -215,6 +216,12 @@ void				print_my_env(t_env *env);
 int					export_command_implementation(char **input, t_env **env,
 						char **array_env);
 int					unset_command_implementation(t_env **env, char **input);
+
+// signal.c
+void				handler_sig_int(int sig);
+void				handler_sig_quit(int sig);
+int					exit_func(void);
+void				init_signals(void);
 
 // // parsing.c
 // t_input				*make_word(t_input *words, char *input);

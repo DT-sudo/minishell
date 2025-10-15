@@ -6,13 +6,24 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/13 19:57:23 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/15 20:22:55 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 int		exit_status = 0;
+
+void printf_env(t_env *env)
+{
+	if (!env)
+		return;
+	while(env)
+	{
+		printf("key: %s, value: %s\n", env->key, env->value);
+		env = env->next;
+	}
+}
 
 // func for tests
 void	print_og_env(char **envp)
@@ -37,6 +48,7 @@ void	printf_cmnd_ls(t_cmnd *list)
 	tmp = list;
 	while (tmp)
 	{
+		printf("----------------------------------------------");
 		printf("\nCOMMAND #%d:\n", ++n);
 		printf("Full arguments: ");
 		while (*(tmp->full_argv))
@@ -88,15 +100,15 @@ void	printf_t_input(t_input *list)
 		printf("[%s]-", list->word);
 		list = list->next;
 	}
-	printf("NULL\n\n");
-	list = tmp;
-	printf("Input types:\n");
-	while(list != NULL)
-	{
-		printf("[%d]-", (int)list->type);
-		list = list->next;
-	}
 	printf("NULL\n");
+	list = tmp;
+	// printf("Input types:\n");
+	// while(list != NULL)
+	// {
+	// 	printf("[%d]-", (int)list->type);
+	// 	list = list->next;
+	// }
+	// printf("NULL\n");
 }
 
 void print_extened_input(char *s)
@@ -106,12 +118,12 @@ void print_extened_input(char *s)
 	printf("\nExtended input:\n");
 	while(*s)
 	{
-		printf("[%c]-", *s);
+		printf("%c", *s);
 		s++;
 	}
 	printf("\n");
 }
-// // demo main
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_env	*env;
@@ -133,24 +145,15 @@ int	main(int argc, char **argv, char **envp)
 			free(input);
 			continue ;
 		}
-		tmp = input; //for free(tmp);  del
-		words = tokenize(words, input);
-		printf_t_input(words);// del
-		
-		printf("\n///////////Extendet dolla part///////////\n\n");// del
-		
-		words = NULL;// del
-		input = tmp;// del
-		input = dollar_extend(input, &env); //func working on now.
-		
-		print_extened_input(input); // del
-
+		input = dollar_extend(input, &env);
+		print_extened_input(input); // "debug" prints extended version of the input
 		words = tokenize(words, input); //creates input token linked list 
 		
-		printf_t_input(words);// del
+		printf_cmnd_ls(creat_cmnd_ls(words));
+
+		
 		// words = tokenize(words, dollar_extend(input, &env));
 		// creat_cmnd_ls(words);
-		// printf_cmnd_ls(creat_cmnd_ls(words));
 		// what_command(creat_cmnd_ls(words), &env, env_array);
 		// free(tmp);
 		// while()
@@ -158,5 +161,16 @@ int	main(int argc, char **argv, char **envp)
 			
 		// }
 	}
+	// write_history(".minishell_history");
 	return (0);
 }
+
+
+// tmp = input; //for free(tmp);  del
+// words = tokenize(words, input);
+// printf_t_input(words);// del
+
+// printf("\n///////////Extendet dolla part///////////\n\n");// del
+
+// words = NULL;// del
+// input = tmp;// del

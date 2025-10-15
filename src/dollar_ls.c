@@ -22,6 +22,24 @@ void	reset_state_sttc(t_quote_state *state)
 	state->type = '\0';
 }
 
+// calcs length to add to OG_input lenght for extented *new_input
+int	calc_len_dif(t_xtnd *head)
+{
+	t_xtnd	*tmp;
+	int		len_dif;
+
+	len_dif = 0;
+	if (!head)
+		exit(33);
+	tmp = head;
+	while (tmp != NULL)
+	{
+		len_dif += tmp->len_dif;
+		tmp = tmp->next;
+	}
+	return (len_dif);
+}
+
 //ok
 // calcs lenght of OG $ENV accurance within original input
 int	calc_og(char *input)
@@ -65,16 +83,17 @@ int	env_cmp(const char *key, const char *input)
 {
 	while (*key && (*key == *input))
 	{
-		key++;
 		input++;
+		key++;
 	}
 	//case when $ENV is dellimited with some other chars except sp/tab 
-	if (!(*input >= 48 && *input <= 57 || *input >= 65
-			&& *input <= 90 || *input >= 97 && *input <= 122
-			|| *input == 95) && *key == '\0')
-		return (1);
-	else if (*key == '\0' && *input == '\0')
-		return (1);
+	if (*key == '\0')
+	{
+		if (!(*input >= 48 && *input <= 57 || *input >= 65
+				&& *input <= 90 || *input >= 97 && *input <= 122
+				|| *input == 95))
+			return (1);
+	}
 	return (0);
 }
 
@@ -96,33 +115,14 @@ t_xtnd	*xtnd_env(char *input, t_env **env)
 	{
 		if (env_cmp(current->key, input))
 		{
-			node->og_len = ft_strlen(current->key) + 1; //
+			node->og_len = ft_strlen(current->key) + 1;
 			node->new = ft_strdup(current->value);
-			node->len_dif = ft_strlen(node->new) - node->og_len; // 
+			node->len_dif = ft_strlen(node->new) - node->og_len;
 			return (node);
 		}
 		current = current->next;
 	}
 	return (node);
-}
-
-
-// calcs length to add to OG_input lenght for extented *new_input
-int	calc_len_dif(t_xtnd *head)
-{
-	t_xtnd	*tmp;
-	int		len_dif;
-
-	len_dif = 0;
-	// if (!head) --> exit
-	// 	exit(33);
-	tmp = head;
-	while (tmp != NULL)
-	{
-		len_dif += tmp->len_dif;
-		tmp = tmp->next;
-	}
-	return (len_dif);
 }
 
 void	put_value(char *new_input, t_xtnd *ls, int n)
@@ -163,9 +163,8 @@ t_xtnd	*crt_xtnd_ls(char *input, t_env **env)
 				exit(41);
 			if (!xtnd_node->new)
 			{
-				// write(1, "problemus?)", 11); //del
 				xtnd_node->new = ft_strdup("");
-				xtnd_node->og_len = calc_og(input);
+				xtnd_node->og_len = calc_og(input + 1);
 				xtnd_node->len_dif = ft_strlen(xtnd_node->new)
 					- xtnd_node->og_len;
 			}
@@ -191,10 +190,7 @@ char	*dollar_extend(char *input, t_env **env)
 	i = 0;
 	xtnds = crt_xtnd_ls(input, env);
 	if (!xtnds)
-	{
-		write(1, "xtnds==NULL\n", 13); // err here
 		return (ft_strdup(input));
-	}
 	new_input = malloc(sizeof(char) * (ft_strlen(input)
 				+ calc_len_dif(xtnds) + 1));
 	if (!new_input)

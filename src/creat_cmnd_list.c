@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 14:38:44 by dt                #+#    #+#             */
-/*   Updated: 2025/10/09 18:45:39 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/15 19:56:56 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	set_apnd_hered_pipe(t_cmnd *node)
 	}
 }
 
-void do_rdrs(t_input *next_cmnd, t_cmnd *node)
+void do_rdrs(t_cmnd *node)
 {
 	t_rdrs *rdr_node;
 	t_rdrs *prev_node;
@@ -88,7 +88,7 @@ t_cmnd	*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd)
 	do_cmnd_array(next_cmnd, node, size_argv);
 	do_full_cmnd_array(next_cmnd, node, size);
 	do_cmnd_array_type(next_cmnd, node, size);
-	do_rdrs(next_cmnd, node);
+	do_rdrs(node);
 	set_apnd_hered_pipe(node);
 	return (node);
 }
