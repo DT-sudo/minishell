@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/15 20:22:55 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/15 20:54:48 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 int		exit_status = 0;
 
-void printf_env(t_env *env)
+void	printf_env(t_env *env)
 {
 	if (!env)
-		return;
-	while(env)
+		return ;
+	while (env)
 	{
 		printf("key: %s, value: %s\n", env->key, env->value);
 		env = env->next;
@@ -89,13 +89,13 @@ void	printf_cmnd_ls(t_cmnd *list)
 
 void	printf_t_input(t_input *list)
 {
-	t_input *tmp;
-	
+	t_input	*tmp;
+
 	tmp = list;
 	if (!list)
 		exit(1);
 	printf("\nInput tokenized:\n");
-	while(list != NULL)
+	while (list != NULL)
 	{
 		printf("[%s]-", list->word);
 		list = list->next;
@@ -111,17 +111,17 @@ void	printf_t_input(t_input *list)
 	// printf("NULL\n");
 }
 
-void print_extened_input(char *s)
+void	print_extened_input(char *s)
 {
 	if (!s)
 		exit(1);
 	printf("\nExtended input:\n");
-	while(*s)
+	while (*s)
 	{
 		printf("%c", *s);
 		s++;
 	}
-	printf("\n");
+	printf("\n\n");
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -131,6 +131,7 @@ int	main(int argc, char **argv, char **envp)
 	char	*tmp;
 	char	*input;
 	char	**env_array;
+	t_cmnd	*list; 
 
 	env = env_init(envp);
 	env_array = do_env_array(env, count_env_ls(env));
@@ -146,25 +147,19 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		input = dollar_extend(input, &env);
-		print_extened_input(input); // "debug" prints extended version of the input
-		words = tokenize(words, input); //creates input token linked list 
 		
-		printf_cmnd_ls(creat_cmnd_ls(words));
-
+		print_extened_input(input);// "debug"
 		
-		// words = tokenize(words, dollar_extend(input, &env));
-		// creat_cmnd_ls(words);
-		// what_command(creat_cmnd_ls(words), &env, env_array);
-		// free(tmp);
-		// while()
-		// {
-			
-		// }
+		words = tokenize(words, input); // creates linked list of tokenized input
+		list = creat_cmnd_ls(words);    // creats linked list of commands
+		
+		// printf_cmnd_ls(list); // "debug" prints all stuff
+		
+		what_command(&list, &env, env_array);
+		
 	}
-	// write_history(".minishell_history");
 	return (0);
 }
-
 
 // tmp = input; //for free(tmp);  del
 // words = tokenize(words, input);
