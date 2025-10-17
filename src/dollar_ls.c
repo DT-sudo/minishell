@@ -40,8 +40,9 @@ void	connect_nodes(t_xtnd **head, t_xtnd *node)
 	tmp->next = node;
 }
 
-int	delimiter(char c)
+int	is_delimiter(char c)
 {
+	// if c == 0-9 / a-z / A-Z / _
 	if (c >= 48 && c <= 57 || c >= 65 && c <= 90 || c >= 97 && c <= 122
 		|| c == 95)
 		return (0);
@@ -54,7 +55,7 @@ int	calc_og(char *input)
 	int	i;
 
 	i = 1;
-	while (*input && !(delimiter(*input)))
+	while (*input && !(is_delimiter(*input)))
 	{
 		input++;
 		i++;
@@ -90,8 +91,12 @@ int	env_cmp(const char *key, const char *input)
 	}
 	if (*key == '\0')
 	{
-		if (!(delimiter(*input)) || *input == '\0')
+		if (is_delimiter(*input))
 			return (1);
+		else if (*input == '\0')
+			return (1);
+		else if (!(is_delimiter(*input)))
+			return (0);
 	}
 	return (0);
 }
@@ -114,6 +119,7 @@ t_xtnd	*xtnd_env(char *input, t_env **env)
 	{
 		if (env_cmp(current->key, input))
 		{
+			write(1, "found\n", 6);
 			node->og_len = ft_strlen(current->key) + 1;
 			node->new = ft_strdup(current->value);
 			node->len_dif = ft_strlen(node->new) - node->og_len;
@@ -153,7 +159,7 @@ t_xtnd	*crt_xtnd_ls(char *input, t_env **env)
 		state = dtct_inquotes(*input);
 		if (!state)
 			exit(40);
-		if (*input == '$' && *(input + 1) && (delimiter(*(input + 1)) == 0
+		if (*input == '$' && *(input + 1) && (is_delimiter(*(input + 1)) == 0
 				&& (state->type == '"' || state->type == 0)))
 		{
 			xtnd_node = xtnd_env(input + 1, env);
@@ -197,7 +203,7 @@ char	*dollar_extend(char *input, t_env **env)
 	while (input[i])
 	{
 		state = dtct_inquotes(input[i]);
-		if (input[i] == '$' && input[i + 1] && (delimiter(*(input + 1)) == 0
+		if (input[i] == '$' && input[i + 1] && (is_delimiter(*(input + 1)) == 0
 				&& (state->type == '"' || state->type == 0)))
 		{
 			put_value(new_input, xtnds, n);
