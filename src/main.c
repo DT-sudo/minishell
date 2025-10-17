@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/15 20:54:48 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/17 16:06:17 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,17 +134,18 @@ int	main(int argc, char **argv, char **envp)
 	t_cmnd	*list; 
 
 	env = env_init(envp);
+	// printf_env(env);
 	env_array = do_env_array(env, count_env_ls(env));
 	while (42)
 	{
 		words = NULL;
-		input = readline("\nMinishell % ");
+		input = readline("Minishell % ");
 		if (input == NULL)
 			break ;
 		if (*input == '\0' || !validate_input(input))
 		{
 			free(input);
-			continue ;
+			continue ;	
 		}
 		input = dollar_extend(input, &env);
 		
@@ -152,20 +153,9 @@ int	main(int argc, char **argv, char **envp)
 		
 		words = tokenize(words, input); // creates linked list of tokenized input
 		list = creat_cmnd_ls(words);    // creats linked list of commands
-		
 		// printf_cmnd_ls(list); // "debug" prints all stuff
-		
 		what_command(&list, &env, env_array);
 		
 	}
 	return (0);
 }
-
-// tmp = input; //for free(tmp);  del
-// words = tokenize(words, input);
-// printf_t_input(words);// del
-
-// printf("\n///////////Extendet dolla part///////////\n\n");// del
-
-// words = NULL;// del
-// input = tmp;// del
