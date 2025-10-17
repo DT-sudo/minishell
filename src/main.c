@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/17 16:06:17 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/17 16:57:16 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,8 +153,8 @@ int	main(int argc, char **argv, char **envp)
 		
 		words = tokenize(words, input); // creates linked list of tokenized input
 		list = creat_cmnd_ls(words);    // creats linked list of commands
-		// printf_cmnd_ls(list); // "debug" prints all stuff
-		what_command(&list, &env, env_array);
+		printf_cmnd_ls(list); // "debug" prints all stuff
+		// what_command(&list, &env, env_array);
 		
 	}
 	return (0);

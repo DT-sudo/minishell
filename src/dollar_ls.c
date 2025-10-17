@@ -119,7 +119,6 @@ t_xtnd	*xtnd_env(char *input, t_env **env)
 	{
 		if (env_cmp(current->key, input))
 		{
-			write(1, "found\n", 6);
 			node->og_len = ft_strlen(current->key) + 1;
 			node->new = ft_strdup(current->value);
 			node->len_dif = ft_strlen(node->new) - node->og_len;
