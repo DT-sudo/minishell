@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/23 01:07:32 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 01:13:32 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ t_input				*move_ptr_cmnd(t_input *next_cmnd);
 void				set_apnd_hered_pipe(t_cmnd *node);
 void				do_rdrs(t_cmnd *node);
 t_cmnd				*setup_cmnd_node(t_cmnd *node, t_input *next_cmnd);
-t_cmnd				*crt_cmnd_ls_logic(int cmnd_qntt, t_cmnd *list,
+t_cmnd				*crt_cmnd_ls_lgc(int cmnd_qntt, t_cmnd *list,
 						t_cmnd *prev_node, t_input *words);
 t_cmnd				*crt_cmnd_ls(t_input *words);
 

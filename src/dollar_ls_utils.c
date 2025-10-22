@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 17:39:51 by dt                #+#    #+#             */
-/*   Updated: 2025/10/23 00:37:58 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 01:14:00 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,24 @@ void	reset_state_sttc(t_quote_state *state)
 	state->inquotes = 0;
 	state->new_pair = 0;
 	state->type = '\0';
+}
+
+char	*crt_nd_new(int len, char *input)
+{
+	char	*new;
+	int		n;
+
+	n = 0;
+	if (!input)
+		exit(9);
+	new = malloc(sizeof(char) * (len + 1));
+	while (n < len)
+	{
+		new[n] = input[n];
+		n++;
+	}
+	new[n] = '\0';
+	return (new);
 }
 
 // connects nodes of t_xtnd linked ls

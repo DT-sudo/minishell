@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 17:54:13 by dt                #+#    #+#             */
-/*   Updated: 2025/10/23 00:38:12 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 01:11:10 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,24 +77,6 @@ t_xtnd	*crt_xtnd_logic(char *input, t_env **env, t_quote_state *st)
 		}
 	}
 	return (xtnd_node);
-}
-
-char	*crt_nd_new(int len, char *input)
-{
-	char	*new;
-	int		n;
-
-	n = 0;
-	if (!input)
-		exit(9);
-	new = malloc(sizeof(char) * (len + 1));
-	while (n < len)
-	{
-		new[n] = input[n];
-		n++;
-	}
-	new[n] = '\0';
-	return (new);
 }
 
 t_xtnd	*pst_q(char *input)

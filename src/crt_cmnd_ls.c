@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 14:38:44 by dt                #+#    #+#             */
-/*   Updated: 2025/10/23 01:04:54 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 01:10:17 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ t_input	*move_ptr_cmnd(t_input *next_cmnd)
 // 	i += 2;
 // }
 
+//shorter!
 void	do_rdrs(t_cmnd *node)
 {
 	t_rdrs	*rdr_node;

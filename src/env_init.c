@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 18:50:50 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/23 01:05:41 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 01:09:56 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	add_new_node(t_env **list, t_env *new_node)
 		tmp->next = new_node;
 	}
 }
-
+//shorter!
 t_env	*env_init(char **envp)
 {
 	t_env	*new_node;
