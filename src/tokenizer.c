@@ -6,13 +6,14 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 16:11:33 by dt                #+#    #+#             */
-/*   Updated: 2025/10/09 18:45:53 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 01:06:40 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 // every uninquoted qutes should be skipped
+// probably should be added free(words) if (words != NULL)
 t_input	*do_node(t_len_type_qts *ltq, char *input)
 {
 	int				i;
@@ -28,7 +29,6 @@ t_input	*do_node(t_len_type_qts *ltq, char *input)
 	res = malloc(sizeof(char) * (ltq->len - ltq->qts + 1));
 	if (res == NULL)
 	{
-		// probably should be added free(words) if (words != NULL)
 		free(new_node);
 		return (NULL);
 	}
@@ -56,11 +56,11 @@ void	add_node(t_input **words, t_input *new_word)
 	t_input	*tmp;
 
 	if (!words || !new_word)
-		return;
+		return ;
 	if (*words == NULL)
 	{
 		*words = new_word;
-		return;
+		return ;
 	}
 	tmp = *words;
 	while (tmp->next != NULL)
@@ -68,7 +68,6 @@ void	add_node(t_input **words, t_input *new_word)
 	tmp->next = new_word;
 }
 
-// returns length of 
 int	creat_tokenz(char *input, t_input **words)
 {
 	t_len_type_qts	*ltq;
@@ -80,13 +79,13 @@ int	creat_tokenz(char *input, t_input **words)
 	ltq->qts = 0;
 	ltq->len = 0;
 	ltq->type = -1;
-	if (*input == 124) // |
+	if (*input == '|')
 		add_node(words, do_node(tk_pipe(input, ltq), input));
-	else if (*input == 62) // >
+	else if (*input == '>')
 		add_node(words, do_node(tk_out_appnd(input, ltq), input));
-	else if (*input == 60) // <
+	else if (*input == '<')
 		add_node(words, do_node(tk_in_here(input, ltq), input));
-	else //  words
+	else
 		add_node(words, do_node(tk_word(input, ltq), input));
 	cnsmd = ltq->len;
 	free(ltq);
@@ -100,15 +99,13 @@ t_input	*tokenize(t_input *words, char *input)
 	res = 0;
 	while (*input)
 	{
-		// write(1, "d", 1);
 		if (*input != ' ' && *input != '\t')
 		{
 			res = creat_tokenz(input, &words);
-            input += res;                           
+			input += res;
 		}
 		else
 			input++;
 	}
 	return (words);
 }
-;

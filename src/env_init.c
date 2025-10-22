@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 18:50:50 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/09 18:45:44 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 01:05:41 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,17 @@
 // func for tests
 void	print_my_env(t_env *env)
 {
-	t_env *tmp;
+	t_env	*tmp;
 
 	if (env == NULL)
-		return;
+		return ;
 	tmp = env;
-	while(tmp->next != NULL)
+	while (tmp->next != NULL)
 	{
 		printf("%s=%s", tmp->key, tmp->value);
 		printf("\n");
 		tmp = tmp->next;
-	}	
+	}
 }
 
 void	add_new_node(t_env **list, t_env *new_node)
@@ -52,7 +52,7 @@ t_env	*env_init(char **envp)
 	t_env	*envp_list;
 	char	*equals_pos;
 	int		i;
-	
+
 	i = 0;
 	envp_list = NULL;
 	while (envp[i])
@@ -61,7 +61,7 @@ t_env	*env_init(char **envp)
 		if (!new_node)
 			exit(1);
 		new_node->next = NULL;
-		equals_pos = ft_strchr(envp[i], '='); // !!!
+		equals_pos = ft_strchr(envp[i], '=');
 		if (equals_pos)
 		{
 			*equals_pos = '\0';

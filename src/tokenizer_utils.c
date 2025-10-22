@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 00:41:29 by dt                #+#    #+#             */
-/*   Updated: 2025/10/09 19:55:42 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/19 20:51:09 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 t_len_type_qts	*tk_out_appnd(char *input, t_len_type_qts *ltq)
 {
-	char *tmp;
-	
+	char	*tmp;
+
 	tmp = input;
 	ltq->len = 1;
 	ltq->qts = 0;
@@ -30,8 +30,8 @@ t_len_type_qts	*tk_out_appnd(char *input, t_len_type_qts *ltq)
 
 t_len_type_qts	*tk_in_here(char *input, t_len_type_qts *ltq)
 {
-	char *tmp;
-	
+	char	*tmp;
+
 	tmp = input;
 	ltq->len = 1;
 	ltq->qts = 0;

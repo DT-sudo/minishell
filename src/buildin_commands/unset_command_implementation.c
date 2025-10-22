@@ -12,53 +12,57 @@
 
 #include "../minishell.h"
 
-int unset_env_var(t_env **env, char *var)
+int	unset_env_var(t_env **env, char *var)
 {
-    t_env *current = *env;
-    t_env *prev = NULL;
+	t_env	*current;
+	t_env	*prev;
 
-    while (current)
-    {
-        if (ft_strcmp(current->key, var) == 0)
-        {
-            if (prev)
-                prev->next = current->next;
-            else
-                *env = current->next;
-            free(current->key);
-            free(current->value);
-            free(current);
-            return (0);
-        }
-        prev = current;
-        current = current->next;
-    }
-    return (1);
+	current = *env;
+	prev = NULL;
+	while (current)
+	{
+		if (ft_strcmp(current->key, var) == 0)
+		{
+			if (prev)
+				prev->next = current->next;
+			else
+				*env = current->next;
+			free(current->key);
+			free(current->value);
+			free(current);
+			return (0);
+		}
+		prev = current;
+		current = current->next;
+	}
+	return (1);
 }
 
-int find_var(char *var, t_env **env)
+int	find_var(char *var, t_env **env)
 {
-    t_env *current = *env;
-    while (current)
-    {
-        if (ft_strcmp(current->key, var) == 0)
-            return (1);
-        current = current->next;
-    }
-    return (0);
+	t_env	*current;
+
+	current = *env;
+	while (current)
+	{
+		if (ft_strcmp(current->key, var) == 0)
+			return (1);
+		current = current->next;
+	}
+	return (0);
 }
 
-int unset_command_implementation(t_env **env, char **input)
+int	unset_command_implementation(t_env **env, char **input)
 {
-    int i;
+	int	i;
 
-    if (!env || !input || !input[1])
-        return (0);  
-    i = 1;
-    while (input[i])
-    {
-        unset_env_var(env, input[i]);
-        i++;
-    }
-    return (0); 
+	if (!env || !input || !input[1])
+		return (0);
+	i = 1;
+	while (input[i])
+	{
+		unset_env_var(env, input[i]);
+		i++;
+	}
+	return (0);
 }

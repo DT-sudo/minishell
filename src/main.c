@@ -6,15 +6,61 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/17 16:57:16 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 00:46:16 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int		exit_status = 0;
+int		g_exit_status = 0;
 
-void	printf_env(t_env *env)
+void	free_input(t_input *words)
+{
+	t_input	*tmp;
+
+	while (words)
+	{
+		tmp = words;
+		words = words->next;
+		free(tmp->word);
+		free(tmp);
+	}
+}
+
+void	free_list(t_cmnd *list)
+{
+	t_cmnd	*tmp;
+	t_rdrs	*rdr_tmp;
+	int		i;
+
+	while (list)
+	{
+		tmp = list;
+		list = list->next;
+		i = 0;
+		while (tmp->argv && tmp->argv[i])
+			free(tmp->argv[i++]);
+		free(tmp->argv);
+		i = 0;
+		while (tmp->full_argv && tmp->full_argv[i])
+			free(tmp->full_argv[i++]);
+		free(tmp->full_argv);
+		i = 0;
+		while (tmp->argv_type && tmp->argv_type[i])
+			free(tmp->argv_type[i++]);
+		free(tmp->argv_type);
+		while (tmp->rdrs)
+		{
+			rdr_tmp = tmp->rdrs;
+			tmp->rdrs = tmp->rdrs->next;
+			free(rdr_tmp->filename);
+			free(rdr_tmp);
+		}
+		free(tmp);
+	}
+}
+
+void	print_env(t_env *env)
 {
 	if (!env)
 		return ;
@@ -38,7 +84,7 @@ void	print_og_env(char **envp)
 }
 
 // test func: del later.
-void	printf_cmnd_ls(t_cmnd *list)
+void	print_cmnd_ls(t_cmnd *list)
 {
 	t_cmnd	*tmp;
 
@@ -87,7 +133,7 @@ void	printf_cmnd_ls(t_cmnd *list)
 	}
 }
 
-void	printf_t_input(t_input *list)
+void	print_input(t_input *list)
 {
 	t_input	*tmp;
 
@@ -131,31 +177,37 @@ int	main(int argc, char **argv, char **envp)
 	char	*tmp;
 	char	*input;
 	char	**env_array;
-	t_cmnd	*list; 
+	t_cmnd	*list;
 
 	env = env_init(envp);
-	// printf_env(env);
+	read_history(".minishell_history");
 	env_array = do_env_array(env, count_env_ls(env));
+	// init_signals();
 	while (42)
 	{
 		words = NULL;
 		input = readline("Minishell % ");
+		// signal(SIGINT, handler_sig_int);
 		if (input == NULL)
+		{
+			g_exit_status = exit_command_implementation(&env, env_array);
 			break ;
+		}
+		if (*input)
+			add_history(input);
 		if (*input == '\0' || !validate_input(input))
 		{
 			free(input);
-			continue ;	
+			continue ;
 		}
-		input = dollar_extend(input, &env);
-		
-		print_extened_input(input);// "debug"
-		
-		words = tokenize(words, input); // creates linked list of tokenized input
-		list = creat_cmnd_ls(words);    // creats linked list of commands
-		printf_cmnd_ls(list); // "debug" prints all stuff
-		// what_command(&list, &env, env_array);
-		
+		input = dollar_extend(input, &env, g_exit_status);
+		// print_extened_input(input);// "debug"
+		words = tokenize(words, input);
+		// creates linked list of tokenized input
+		list = crt_cmnd_ls(words); // creats linked list of commands
+		// print_cmnd_ls(list); // "debug" prints all stuff
+		what_command(&list, &env, env_array);
 	}
+	write_history(".minishell_history");
 	return (0);
 }
