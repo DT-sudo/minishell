@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 14:38:44 by dt                #+#    #+#             */
-/*   Updated: 2025/10/23 01:10:17 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 17:42:55 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,6 @@ t_input	*move_ptr_cmnd(t_input *next_cmnd)
 		return (next_cmnd->next);
 	return (NULL);
 }
-
-// void	do_rdrs_lgc(t_rdrs *rdr_node, t_rdrs *prev_node, int i)
-// {
-// 	if(!rdr_node)
-// 		return ;
-// 	rdr_node->redir_type = *(node->argv_type[i]);
-// 	rdr_node->filename = node->full_argv[i + 1];
-// 	rdr_node->next = NULL;
-// 	if (node->rdrs == NULL)
-// 		node->rdrs = rdr_node;
-// 	else
-// 		prev_node->next = rdr_node;
-// 	prev_node = rdr_node;
-// 	i += 2;
-// }
 
 //shorter!
 void	do_rdrs(t_cmnd *node)

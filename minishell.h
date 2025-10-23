@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/23 16:23:39 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 17:41:54 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,11 @@ typedef struct s_cmnd
 	bool heredoc;             // <<
 	bool			pipe;
 	struct s_cmnd	*next;
+
+	// int pipe_fd[2]; // fd[0] - read, fd[1] - write
+	// int out_fd;     // stdout  (-1)
+	// int in_fd;      // stdin   (-1 = not opend)
+	// pid_t pid;      // PID of the command
 }					t_cmnd;
 
 // input tokens

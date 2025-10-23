@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 17:54:13 by dt                #+#    #+#             */
-/*   Updated: 2025/10/21 18:47:01 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 17:32:12 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	match_buildin(char *og_input, char *match_cmnd)
 {
-	while (*og_input == *match_cmnd && *match_buildin)
+	while (*og_input == *match_cmnd && *match_cmnd)
 	{
 		og_input++;
 		match_cmnd++;
@@ -48,19 +48,19 @@ bool	is_command_buildin(char **input)
 
 int	which_buildin_command(t_cmnd *cmnd, t_env **my_env, char **array_env)
 {
-	if (match_buildin(cmnd->full_argv[0], "echo") == 0)
+	if (match_buildin(cmnd->full_argv[0], "echo"))
 		return (echo_command_implementation(&cmnd, my_env));
-	else if (match_buildin(cmnd->argv[0], "pwd") == 0)
+	else if (match_buildin(cmnd->argv[0], "pwd"))
 		return (pwd_command_implementation(*my_env));
-	else if (match_buildin(cmnd->argv[0], "export") == 0)
+	else if (match_buildin(cmnd->argv[0], "export"))
 		return (export_command_implementation(cmnd->argv, my_env, array_env));
-	else if (match_buildin(cmnd->argv[0], "unset") == 0)
+	else if (match_buildin(cmnd->argv[0], "unset"))
 		return (unset_command_implementation(my_env, cmnd->argv));
-	else if (match_buildin(cmnd->argv[0], "cd") == 0)
+	else if (match_buildin(cmnd->argv[0], "cd"))
 		return (cd_command_implementation(cmnd->argv, *my_env));
-	else if (match_buildin(cmnd->argv[0], "exit") == 0)
+	else if (match_buildin(cmnd->argv[0], "exit"))
 		return (exit_command_implementation(my_env, array_env));
-	else if (match_buildin(cmnd->argv[0], "env") == 0)
+	else if (match_buildin(cmnd->argv[0], "env"))
 	{
 		print_my_env(*my_env);
 		return (0);

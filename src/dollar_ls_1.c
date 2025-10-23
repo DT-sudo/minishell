@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 17:54:13 by dt                #+#    #+#             */
-/*   Updated: 2025/10/23 01:11:10 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 18:32:18 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,11 @@ t_xtnd	*crt_xtnd_logic(char *input, t_env **env, t_quote_state *st)
 	if (!xtnd_node->new)
 	{
 		if (*(input) == '?')
+		{
+			// write(1, "1", 1);
+			// printf("$s", input);
 			xtnd_node = crt_xtnd_ex_status(st);
+		}
 		else
 		{
 			xtnd_node->new = ft_strdup("");
@@ -112,7 +116,7 @@ t_xtnd	*crt_xtnd_ls(char *input, t_env **env, int g_exit_status)
 		if (!st)
 			exit(40);
 		if (*input == '$' && *(input + 1) && (st->type == '"' || st->type == 0)
-			&& !(is_delimiter(*(input + 1))))
+			&& (is_delimiter(*(input + 1)) || !(is_delimiter(*(input + 1)))))
 		{
 			xtnd_node = crt_xtnd_logic(input + 1, env, st);
 			connect_nodes(&head, xtnd_node);

@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:30:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/23 16:22:28 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 17:41:36 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,12 @@ int	main(int argc, char **argv, char **envp)
 		// creates linked list of tokenized input
 		list = crt_cmnd_ls(words); // creats linked list of commands
 		// print_cmnd_ls(list); // "debug" prints all stuff
+		// if (list && list->next) 
+		// 	execute_pipeline(list, &env, env_array);
+		// else 
+		// 	execute_single_command_main(list, &env, env_array);
 		what_command(&list, &env, env_array);
+
 	}
 	write_history(".minishell_history");
 	return (0);
