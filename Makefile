@@ -6,7 +6,7 @@
 #    By: dt <dt@student.42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/06 15:18:15 by olcherno          #+#    #+#              #
-#    Updated: 2025/10/23 00:49:52 by dt               ###   ########.fr        #
+#    Updated: 2025/10/23 16:22:47 by dt               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ SRC_OP = cmnd_ls_utils_0.c cmnd_ls_utils_1.c \
 crt_cmnd_ls.c do_env_array.c main.c env_init.c \
 tokenizer.c tokenizer_utils.c tokenizer_utils_2.c\
 utils.c validate_input.c validate_input_2.c what_command.c dollar_ls_utils.c \
-dollar_ls_0.c dollar_ls_1.c signal.c \
+dollar_ls_0.c dollar_ls_1.c signal.c main_utils.c\
 
 SRC_DATA = buildin_commands/cd_command_implementation.c    buildin_commands/exit_command_implementation.c \
 buildin_commands/pwd_command_implementation.c buildin_commands/echo_command_implementation.c \

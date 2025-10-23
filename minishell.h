@@ -6,7 +6,7 @@
 /*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:21 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/23 01:13:32 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 16:23:39 by dt               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,14 @@ typedef struct s_env
 	int				new_len;
 	struct s_env	*next;
 }					t_env;
+
+// main_utils.c
+void				free_list(t_cmnd *list);
+void				print_env(t_env *env);
+void				print_og_env(char **envp);
+void				print_cmnd_ls(t_cmnd *list);
+void				print_input(t_input *list);
+void				print_extened_input(char *s);
 
 // creat_cmnd_list.c
 t_input				*move_ptr_cmnd(t_input *next_cmnd);
