@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_command_implementation2.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: olcherno <olcherno@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/19 20:42:50 by dt                #+#    #+#             */
-/*   Updated: 2025/10/19 20:42:54 by dt               ###   ########.fr       */
+/*   Created: 2025/10/19 20:42:50 by olcherno          #+#    #+#             */
+/*   Updated: 2025/11/06 15:08:49 by olcherno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	change_to_oldpwd(char *path, char *prev_dir, char *cwd)
 	return (0);
 }
 
-int	previous_dir(char **input, t_env *env)
+int	previous_dir(t_env *env)
 {
 	char	*path;
 	char	cwd[PATH_MAX];
@@ -61,7 +61,6 @@ int	previous_dir(char **input, t_env *env)
 int	standard_cd(char **input, t_env *env)
 {
 	char	*path;
-	char	cwd[PATH_MAX];
 
 	path = input[1];
 	change_oldpwd(env);
@@ -76,26 +75,25 @@ int	standard_cd(char **input, t_env *env)
 
 int	cd_command_implementation(char **input, t_env *env)
 {
-	int		i;
-	t_env	*tmp;
+	int	i;
 
 	i = 1;
 	if (input[i] == NULL)
 	{
-		return (only_cd(input, env));
+		return (only_cd(env));
 	}
 	else if ((input[i] != NULL) && (input[i + 1] == NULL))
 	{
 		if (ft_strcmp(input[i], "-") == 0)
-			return (previous_dir(input, env));
+			return (previous_dir(env));
 		else if (ft_strcmp(input[i], "~") == 0)
-			return (only_cd(input, env));
+			return (only_cd(env));
 		else
 			return (standard_cd(input, env));
 	}
 	else
 	{
-		printf("cd: too many arguments\n");
+		ft_fprintf(STDERR_FD, "cd: too many arguments\n");
 		return (1);
 	}
 	return (0);

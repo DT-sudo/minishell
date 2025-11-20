@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_command_implementation.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: olcherno <olcherno@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 23:50:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/07 23:38:50 by dt               ###   ########.fr       */
+/*   Updated: 2025/10/23 16:42:17 by olcherno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ char	**bubble_sort(char **array, int size)
 	}
 	return (array);
 }
+
 int	print_and_free_array(char **array)
 {
 	int	i;

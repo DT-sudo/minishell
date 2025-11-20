@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   validate_input.c                                   :+:      :+:    :+:   */
+/*   validate_input_1.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: olcherno <olcherno@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/27 16:30:48 by dt                #+#    #+#             */
-/*   Updated: 2025/10/21 18:50:43 by dt               ###   ########.fr       */
+/*   Created: 2025/07/27 16:30:48 by dtereshc          #+#    #+#             */
+/*   Updated: 2025/11/06 13:11:26 by olcherno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,25 +71,25 @@ int	has_double_and_or_pipe(char *input)
 			in_q = 0;
 		else if (*input == 39 && in_q == 2)
 			in_q = 0;
-		if (!in_q && (((*input == 38 && *(input + 1) == 38)) || (*input == 124)
-				&& *(input + 1) == 124))
+		if (!in_q && (((*input == 38 && *(input + 1) == 38)) || ((*input == 124)
+					&& *(input + 1) == 124)))
 			return (1);
 		input++;
 	}
 	return (0);
 }
 
-bool	validate_input(char *input)
+int	skip_spaces(char *str)
 {
-	if (!input)
-		return (false);
-	if (has_unclosed_quotes(input))
-		return (drop_false("Minishell:  syntax error: unclosed quotes\n"));
-	if (has_backslash(input))
-		return (drop_false("Minishell: syntax error: unexpected '\\'\n"));
-	if (has_simocolon(input))
-		return (drop_false("Minishell: syntax error: unexpected ';'\n"));
-	if (has_double_and_or_pipe(input))
-		return (drop_false("Minishell: syntax error: unexpected '&&'or'||'\n"));
-	return (true);
+	int	i;
+
+	i = 0;
+	while (str[i] && (str[i] == ' ' || str[i] == '\t'))
+		i++;
+	return (i);
+}
+
+int	is_redir_char(char c)
+{
+	return (c == '<' || c == '>');
 }

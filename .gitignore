@@ -1,0 +1,12 @@
+# Build artefacts
+obj/
+*.o
+*.d
+*.a
+minishell
+
+# Shell state
+.minishell_history
+
+# macOS
+.DS_Store

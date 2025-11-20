@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export_command_implementation.c                    :+:      :+:    :+:   */
+/*   export_command_implementation2.c                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: olcherno <olcherno@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 23:50:53 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/07 23:38:50 by dt               ###   ########.fr       */
+/*   Updated: 2025/11/06 15:08:48 by olcherno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	only_export(char **input, t_env *env)
+int	only_export(t_env *env)
 {
 	char	**array;
 	int		size;
@@ -54,17 +54,17 @@ void	print_array_error(char **str)
 	int	i;
 
 	i = 0;
-	printf("minishell: export: '");
+	ft_fprintf(STDERR_FD, "minishell: export: '");
 	while (str[i])
 	{
-		printf("%s", str[i]);
+		ft_fprintf(STDERR_FD, "%s", str[i]);
 		if (str[i + 1] != NULL)
 		{
-			printf(" ");
+			ft_fprintf(STDERR_FD, " ");
 		}
 		i++;
 	}
-	printf("': not a valid identifier\n");
+	ft_fprintf(STDERR_FD, "': not a valid identifier\n");
 }
 
 int	check_export_form(const char *input)
@@ -79,6 +79,7 @@ int	check_export_form(const char *input)
 	else
 		return (2);
 }
+
 int	only_var(char *input, t_env **env)
 {
 	t_env	*tmp;

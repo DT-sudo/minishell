@@ -3,96 +3,75 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils_2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: dtereshc <dtereshc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/29 00:39:29 by dt                #+#    #+#             */
-/*   Updated: 2025/10/21 19:26:55 by dt               ###   ########.fr       */
+/*   Created: 2025/11/02 15:25:58 by dtereshc          #+#    #+#             */
+/*   Updated: 2025/11/06 16:47:39 by dtereshc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	calc_len(t_input *new_word)
-{
-	int	len;
+//full file check is needed 
 
-	len = 0;
-	while (new_word->word[len] != '\0')
-		len++;
-	return (len);
+// eat U+00A0 (C2 A0) -> write ' ' and advance
+static int	eat_nbsp(char *s, size_t *r, size_t *w, const unsigned char *p)
+{
+	if (p[0] != 0xC2 || p[1] != 0xA0)
+		return (0);
+	s[(*w)++] = ' ';
+	*r += 2;
+	return (1);
 }
 
-// if > 0 is complex ==> returns how many ', "
-// outter(that shouldnt be printed) are within one word
-int	is_complex_wrd(t_len_type_qts *ltq, char *input)
+// eat U+200B (E2 80 8B) -> remove
+static int	eat_zwsp(const unsigned char *p, size_t *r)
 {
-	int				i;
-	int				q;
-	t_quote_state	*state;
-
-	i = 0;
-	q = 0;
-	while (i < ltq->len && input[i])
-	{
-		state = dtct_inquotes(input[i++]);
-		if (state->new_pair)
-			q += 2;
-	}
-	reset_state_sttc(state);
-	return (q);
+	if (p[0] != 0xE2 || p[1] != 0x80 || p[2] != 0x8B)
+		return (0);
+	*r += 3;
+	return (1);
 }
 
-// marks if the pointer is within quotes or out of them
-t_quote_state	*dtct_inquotes(char cr)
+// write char, mapping ASCII control whitespace to ' ' 
+static void	put_norm_char(char *s, size_t r, size_t *w)
 {
-	static t_quote_state	chr = {0, 0, 0, 0};
+	unsigned char	c;
 
-	if (cr == '\0')
-		chr = (t_quote_state){0, 0, 0, 0};
-	if (chr.new_pair)
-		chr.new_pair = 0;
-	if ((cr == '\'' || cr == '"'))
+	c = (unsigned char)s[r];
+	if (c == '\t' || c == '\n' || c == '\v' || c == '\f')
+		c = ' ';
+	s[(*w)++] = (char)c;
+}
+
+void	normalize_input_inplace(char *s)
+{
+	size_t	r;
+	size_t	w;
+
+	if (!s)
+		return ;
+	r = 0;
+	w = 0;
+	while (s[r])
 	{
-		if (!chr.inquotes)
+		if (eat_nbsp(s, &r, &w, (unsigned char *)s + r))
+			continue ;
+		if (eat_zwsp((unsigned char *)s + r, &r))
+			continue ;
+		if ((unsigned char)s[r] == '\r')
 		{
-			chr.type = cr;
-			chr.closed = 0;
-			chr.inquotes = 1;
-			chr.new_pair = 1;
+			r++;
+			continue ;
 		}
-		else if (cr == chr.type)
-		{
-			chr.type = 0;
-			chr.closed = 1;
-			chr.inquotes = 0;
-		}
+		put_norm_char(s, r, &w);
+		r++;
 	}
-	else if (chr.closed)
-		chr.closed = 0;
-	return (&chr);
+	s[w] = '\0';
 }
 
-t_len_type_qts	*tk_word(char *input, t_len_type_qts *ltq)
+int	is_shell_space(unsigned char c)
 {
-	t_quote_state	*state;
-	char			*rst_input;
-
-	rst_input = input;
-	while (*input)
-	{
-		state = dtct_inquotes(*input);
-		if ((*input == ' ' || *input == '\t' || *input == '>' || *input == '<'
-				|| *input == '|') && !state->inquotes)
-			break ;
-		ltq->len++;
-		input++;
-	}
-	input = rst_input;
-	reset_state_sttc(state);
-	ltq->qts = is_complex_wrd(ltq, input);
-	if (ltq->qts)
-		ltq->type = TOKEN_COMPLEX;
-	else
-		ltq->type = TOKEN_WORD;
-	return (ltq);
+	return (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v'
+		|| c == '\f');
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_command_implementation.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: dtereshc <dtereshc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/19 20:42:41 by dt                #+#    #+#             */
-/*   Updated: 2025/10/19 20:42:43 by dt               ###   ########.fr       */
+/*   Created: 2025/10/23 16:36:56 by olcherno          #+#    #+#             */
+/*   Updated: 2025/11/03 20:27:15 by dtereshc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	change_pwd(t_env *env)
 {
-	char	oldpwd[PATH_MAX];
 	char	newpwd[PATH_MAX];
 	t_env	*tmp;
 
@@ -36,7 +35,6 @@ void	change_pwd(t_env *env)
 void	change_oldpwd(t_env *env)
 {
 	char	oldpwd[PATH_MAX];
-	char	newpwd[PATH_MAX];
 	t_env	*tmp;
 
 	if (!getcwd(oldpwd, sizeof(oldpwd)))
@@ -80,11 +78,10 @@ void	print_pwd_and_oldpwd(t_env *env)
 	}
 }
 
-int	only_cd(char **input, t_env *env)
+int	only_cd(t_env *env)
 {
 	char	*path;
 	t_env	*tmp;
-	char	cwd[PATH_MAX];
 
 	tmp = env;
 	while (tmp != NULL)

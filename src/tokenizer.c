@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: olcherno <olcherno@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/26 16:11:33 by dt                #+#    #+#             */
-/*   Updated: 2025/10/23 01:06:40 by dt               ###   ########.fr       */
+/*   Created: 2025/07/26 16:11:33 by dtereshc          #+#    #+#             */
+/*   Updated: 2025/11/06 13:13:12 by olcherno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// every uninquoted qutes should be skipped
-// probably should be added free(words) if (words != NULL)
 t_input	*do_node(t_len_type_qts *ltq, char *input)
 {
 	int				i;
@@ -24,14 +22,11 @@ t_input	*do_node(t_len_type_qts *ltq, char *input)
 	i = 0;
 	state = NULL;
 	new_node = malloc(sizeof(t_input));
-	if (new_node == NULL || !input)
+	if (!new_node || !input)
 		return (NULL);
 	res = malloc(sizeof(char) * (ltq->len - ltq->qts + 1));
 	if (res == NULL)
-	{
-		free(new_node);
-		return (NULL);
-	}
+		return (do_node_clear(new_node));
 	while (input && i < (ltq->len - ltq->qts))
 	{
 		state = dtct_inquotes(*input);
@@ -41,12 +36,7 @@ t_input	*do_node(t_len_type_qts *ltq, char *input)
 			res[i++] = *input++;
 	}
 	res[i] = '\0';
-	new_node->word = res;
-	new_node->next = NULL;
-	if (ltq->qts)
-		new_node->type = TOKEN_COMPLEX;
-	else
-		new_node->type = ltq->type;
+	end_do_node(ltq, new_node, res);
 	reset_state_sttc(state);
 	return (new_node);
 }
@@ -80,7 +70,7 @@ int	creat_tokenz(char *input, t_input **words)
 	ltq->len = 0;
 	ltq->type = -1;
 	if (*input == '|')
-		add_node(words, do_node(tk_pipe(input, ltq), input));
+		add_node(words, do_node(tk_pipe(ltq), input));
 	else if (*input == '>')
 		add_node(words, do_node(tk_out_appnd(input, ltq), input));
 	else if (*input == '<')
@@ -94,12 +84,14 @@ int	creat_tokenz(char *input, t_input **words)
 
 t_input	*tokenize(t_input *words, char *input)
 {
-	int res;
+	int	res;
 
 	res = 0;
+	if (!input)
+		return (NULL);
 	while (*input)
 	{
-		if (*input != ' ' && *input != '\t')
+		if (!is_shell_space((unsigned char)*input))
 		{
 			res = creat_tokenz(input, &words);
 			input += res;

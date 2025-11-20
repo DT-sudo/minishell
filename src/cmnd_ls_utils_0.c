@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmnd_ls_utils_0.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: olcherno <olcherno@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/06 17:31:02 by dt                #+#    #+#             */
-/*   Updated: 2025/10/20 17:38:44 by dt               ###   ########.fr       */
+/*   Created: 2025/09/06 17:31:02 by dtereshc          #+#    #+#             */
+/*   Updated: 2025/11/03 16:19:46 by olcherno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void	set_to_zero(t_cmnd *cmnd_node)
 	cmnd_node->full_argv = NULL;
 	cmnd_node->argv_type = NULL;
 	cmnd_node->rdrs = NULL;
-	cmnd_node->rdr_in = false;
-	cmnd_node->rdr_out = false;
+	cmnd_node->fds[0] = -1;
+	cmnd_node->fds[1] = -1;
 	cmnd_node->appnd = false;
 	cmnd_node->heredoc = false;
 	cmnd_node->pipe = false;
@@ -83,4 +83,19 @@ int	count_cmnd_len_argv(t_input *words)
 		tmp = tmp->next;
 	}
 	return (i);
+}
+
+void	set_apnd_hered_pipe(t_cmnd *node)
+{
+	int		i;
+
+	i = 0;
+	while (node->argv_type[i])
+	{
+		if ((*(node->argv_type[i])) == TOKEN_APPND)
+			node->appnd = true;
+		else if (*(node->argv_type[i]) == TOKEN_HERE)
+			node->heredoc = true;
+		i++;
+	}
 }

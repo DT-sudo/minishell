@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset_command_implementation.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dtereshc <dtereshc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olcherno <olcherno@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 23:50:59 by olcherno          #+#    #+#             */
-/*   Updated: 2025/09/11 16:40:59 by dtereshc         ###   ########.fr       */
+/*   Updated: 2025/10/23 17:56:19 by olcherno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

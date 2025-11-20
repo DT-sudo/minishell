@@ -3,47 +3,78 @@
 /*                                                        :::      ::::::::   */
 /*   exit_command_implementation.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: olcherno <olcherno@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 23:50:50 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/19 20:47:04 by dt               ###   ########.fr       */
+/*   Updated: 2025/11/06 15:08:48 by olcherno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	exit_command_implementation(t_env **my_env, char **array_env)
+// ft_fprintf("exit: %s: numeric argument required\n", arg);
+// Note: This function doesn't free memory because it's called from
+// parse_and_validate_exit_arg which is called from exit_command_implementation
+// The parent function will handle cleanup if needed
+void	exit_with_numeric_error(char *arg, t_cleanup *cleanup)
 {
-	t_env	*curr;
-	t_env	*next;
-	int		i;
+	write(2, "exit:  ", 7);
+	write(2, arg, ft_strlen(arg));
+	write(2, " : numeric argument required\n", 29);
+	g_exit_status = 2;
+	write_history(".minishell_history");
+	rl_clear_history();
+	if (cleanup->raw_input && *cleanup->raw_input)
+		free(*cleanup->raw_input);
+	if (cleanup->cmnd_ls && cleanup->words)
+		free_cmnd_ls(cleanup->cmnd_ls, cleanup->words);
+	free_env_array(cleanup->env_array);
+	free_env(cleanup->env);
+	exit(g_exit_status);
+}
 
-	if (my_env && *my_env)
+long long	parse_and_validate_exit_arg(char *arg, t_cleanup *cleanup)
+{
+	int	i;
+
+	i = 0;
+	if (arg[0] == '-' || arg[0] == '+')
+		i++;
+	if (arg[i] == '\0')
+		exit_with_numeric_error(arg, cleanup);
+	while (arg[i])
 	{
-		curr = *my_env;
-		while (curr)
-		{
-			next = curr->next;
-			free(curr->key);
-			free(curr->value);
-			free(curr);
-			curr = next;
-		}
-		*my_env = NULL;
+		if (!ft_isdigit(arg[i]))
+			exit_with_numeric_error(arg, cleanup);
+		i++;
 	}
-	if (array_env)
+	return ((long long)ft_atoi(arg));
+}
+
+int	exit_command_implementation(char **input, t_cleanup *cleanup)
+{
+	long long	val;
+
+	if (isatty(STDIN_FILENO))
+		write(2, "exit\n", 5);
+	if (input[1])
 	{
-		i = 0;
-		while (array_env[i])
+		val = parse_and_validate_exit_arg(input[1], cleanup);
+		if (input[2])
 		{
-			if (array_env[i])
-				free(array_env[i]);
-			i++;
+			ft_fprintf(STDERR_FD, "exit: too many arguments\n");
+			g_exit_status = 1;
+			return (1);
 		}
-		free(array_env);
-		array_env = NULL;
+		g_exit_status = (unsigned char)val;
 	}
-	ft_printf("Exiting minishell...\n");
-	g_exit_status = 0;
+	write_history(".minishell_history");
+	rl_clear_history();
+	if (cleanup->raw_input && *cleanup->raw_input)
+		free(*cleanup->raw_input);
+	if (cleanup->cmnd_ls && cleanup->words)
+		free_cmnd_ls(cleanup->cmnd_ls, cleanup->words);
+	free_env_array(cleanup->env_array);
+	free_env(cleanup->env);
 	exit(g_exit_status);
 }

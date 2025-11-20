@@ -3,82 +3,82 @@
 /*                                                        :::      ::::::::   */
 /*   what_command.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: dtereshc <dtereshc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/10 17:54:13 by dt                #+#    #+#             */
-/*   Updated: 2025/10/23 17:32:12 by dt               ###   ########.fr       */
+/*   Created: 2025/08/20 17:45:07 by olcherno          #+#    #+#             */
+/*   Updated: 2025/11/06 16:14:34 by dtereshc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	match_buildin(char *og_input, char *match_cmnd)
+t_cmnd	*skip_cmnds(t_cmnd *cmnd)
 {
-	while (*og_input == *match_cmnd && *match_cmnd)
-	{
-		og_input++;
-		match_cmnd++;
-	}
-	if (!(*match_buildin) && !(*og_input))
-		return (1);
-	return (0);
+	if (!cmnd)
+		return (NULL);
+	while (cmnd && cmnd->pipe)
+		cmnd = cmnd->next;
+	if (cmnd)
+		cmnd = cmnd->next;
+	return (cmnd);
 }
 
-bool	is_command_buildin(char **input)
+t_cmnd	*what_cmnd_shrt_0(t_cmnd *cmnd, int stdin_backup, int stdout_backup)
 {
-	t_input	*f_token;
+	if (!cmnd)
+		return (NULL);
+	cmnd = cmnd->next;
+	g_exit_status = 1;
+	secure_fd(stdin_backup, stdout_backup);
+	return (cmnd);
+}
 
-	if (match_buildin(input[0], "cd"))
-		return (true);
-	else if (match_buildin(input[0], "pwd"))
-		return (true);
-	else if (match_buildin(input[0], "export"))
-		return (true);
-	else if (match_buildin(input[0], "unset"))
-		return (true);
-	else if (match_buildin(input[0], "echo"))
-		return (true);
-	else if (match_buildin(input[0], "env"))
-		return (true);
-	else if (match_buildin(input[0], "exit"))
-		return (true);
+void	what_cmnd_shrt_1(t_cmnd *cmnd, t_env **my_env, t_cleanup *cleanup)
+{
+	if (!cmnd->argv || !cmnd->argv[0] || !cmnd->argv[0][0])
+	{
+		if (cmnd->argv && cmnd->argv[0] && !cmnd->argv[0][0])
+		{
+			ft_putstr_fd("bash: ", 2);
+			ft_putstr_fd(cmnd->argv[0], 2);
+			ft_putstr_fd(": command not found\n", 2);
+			g_exit_status = 127;
+		}
+		else
+			g_exit_status = 0;
+		return ;
+	}
+	if (is_command_buildin(cmnd->argv))
+		g_exit_status = which_buildin_command(cmnd, my_env, cleanup);
 	else
-		return (false);
+		g_exit_status = other_commands_implementation(cmnd->argv, my_env);
 }
 
-int	which_buildin_command(t_cmnd *cmnd, t_env **my_env, char **array_env)
-{
-	if (match_buildin(cmnd->full_argv[0], "echo"))
-		return (echo_command_implementation(&cmnd, my_env));
-	else if (match_buildin(cmnd->argv[0], "pwd"))
-		return (pwd_command_implementation(*my_env));
-	else if (match_buildin(cmnd->argv[0], "export"))
-		return (export_command_implementation(cmnd->argv, my_env, array_env));
-	else if (match_buildin(cmnd->argv[0], "unset"))
-		return (unset_command_implementation(my_env, cmnd->argv));
-	else if (match_buildin(cmnd->argv[0], "cd"))
-		return (cd_command_implementation(cmnd->argv, *my_env));
-	else if (match_buildin(cmnd->argv[0], "exit"))
-		return (exit_command_implementation(my_env, array_env));
-	else if (match_buildin(cmnd->argv[0], "env"))
-	{
-		print_my_env(*my_env);
-		return (0);
-	}
-	return (0);
-}
-
-void	what_command(t_cmnd **cmnd_ls, t_env **my_env, char **array_env)
+void	what_command(t_cmnd **cmnd_ls, t_env **my_env,
+		t_cleanup *cleanup)
 {
 	t_cmnd	*cmnd;
+	int		stdin_backup;
+	int		stdout_backup;
 
 	cmnd = *cmnd_ls;
 	while (cmnd != NULL)
 	{
-		if (is_command_buildin(cmnd->argv))
-			g_exit_status = which_buildin_command(cmnd, my_env, array_env);
-		else
-			g_exit_status = other_commands_implementation(cmnd->argv, my_env);
+		stdin_backup = dup(STDIN_FILENO);
+		stdout_backup = dup(STDOUT_FILENO);
+		if (cmnd->next)
+		{
+			g_exit_status = do_pipeline(cmnd_ls, cleanup);
+			cmnd = skip_cmnds(cmnd);
+			continue ;
+		}
+		else if (implamentation_redir(cmnd))
+		{
+			cmnd = what_cmnd_shrt_0(cmnd, stdin_backup, stdout_backup);
+			continue ;
+		}
+		what_cmnd_shrt_1(cmnd, my_env, cleanup);
+		secure_fd(stdin_backup, stdout_backup);
 		cmnd = cmnd->next;
 	}
 }

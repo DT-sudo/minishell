@@ -3,59 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dt <dt@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: olcherno <olcherno@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 14:39:52 by olcherno          #+#    #+#             */
-/*   Updated: 2025/10/07 13:59:36 by dt               ###   ########.fr       */
+/*   Updated: 2025/11/01 16:36:59 by olcherno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-// char	*ft_strjoin(char const *s1, char const *s2)
-// {
-// 	char	*res;
-// 	size_t	i;
-// 	size_t	j;
-
-// 	i = 0;
-// 	j = 0;
-// 	if (!s1 || !s2)
-// 		return (NULL);
-// 	res = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-// 	if (!res)
-// 		return (NULL);
-// 	while (s1[i] != '\0')
-// 	{
-// 		res[i] = s1[i];
-// 		i++;
-// 	}
-// 	while (s2[j] != '\0')
-// 	{
-// 		res[i + j] = s2[j];
-// 		j++;
-// 	}
-// 	res[i + j] = '\0';
-// 	return (res);
-// }
-
-// size_t	ft_strlen(const char *c)
-// {
-// 	size_t	i;
-
-// 	i = 0;
-// 	if (!c)
-// 	{
-// 		return (0);
-// 	}
-// 	while (c[i] != '\0')
-// 	{
-// 		i++;
-// 	}
-// 	return (i);
-// }
-
-
 
 char	*ft_strncpy(char *dest, char *src, unsigned int n)
 {
